@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Build&amp;Budget</string>
+    <string name="build_budget"><![CDATA[Build & Budget]]></string>
+    <string name="feature_image">Feature Image</string>
+    <string name="skip">Skip</string>
+    <string name="next">Next</string>
+    <string name="tutorialpager">TutorialPager</string>
+    <string name="start">Get started</string>
+</resources>
