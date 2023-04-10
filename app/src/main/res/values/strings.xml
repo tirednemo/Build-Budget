@@ -6,4 +6,7 @@
     <string name="next">Next</string>
     <string name="tutorialpager">TutorialPager</string>
     <string name="start">Get started</string>
+    <string name="open_nav">Open Navigation Drawer</string>
+    <string name="close_nav">Close Navigation Drawer</string>
+
 </resources>

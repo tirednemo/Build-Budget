@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_home"
+            android:icon="@drawable/home"
+            android:title="Home"/>
+        <item
+            android:id="@+id/nav_acc"
+            android:icon="@drawable/baseline_switch_account_24"
+            android:title="Account"/>
+        <item
+            android:id="@+id/nav_banksync"
+            android:icon="@drawable/baseline_sync_24"
+            android:title="Bank Sync"/>
+        <item
+            android:id="@+id/nav_stats"
+            android:icon="@drawable/baseline_auto_graph_24"
+            android:title="Statistics"/>
+        <item
+            android:id="@+id/nav_budget"
+            android:icon="@drawable/baseline_wallet_24"
+            android:title="Budget"/>
+        <item
+            android:id="@+id/nav_debts"
+            android:icon="@drawable/baseline_attach_money_24"
+            android:title="Debts"/>
+        <item
+            android:id="@+id/nav_ppay"
+            android:icon="@drawable/baseline_payments_24"
+            android:title="Planned Payments"/>
+        <item
+            android:id="@+id/nav_goals"
+            android:icon="@drawable/baseline_track_changes_24"
+            android:title="Goals"/>
+        <item
+            android:id="@+id/nav_invests"
+            android:icon="@drawable/baseline_local_atm_24"
+            android:title="Investments"/>
+    </group>
+    <group
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_currency_ex"
+            android:icon="@drawable/baseline_currency_exchange_24"
+            android:title="Currency Exchange"/>
+        <item
+            android:id="@+id/nav_stock_ex"
+            android:icon="@drawable/baseline_stacked_line_chart_24"
+            android:title="Stock Exchange"/>
+        <item
+            android:id="@+id/nav_loyal"
+            android:icon="@drawable/baseline_credit_card_24"
+            android:title="Loyalty Cards"/>
+        <item
+            android:id="@+id/nav_warranty"
+            android:icon="@drawable/baseline_logout_24"
+            android:title="Warrranty Cards"/>
+    </group>
+    <group
+        android:checkableBehavior="single">
+                <item
+                    android:id="@+id/nav_settings"
+                    android:icon="@drawable/baseline_settings_24"
+                    android:title="Settings"/>
+                <item
+                    android:id="@+id/nav_help"
+                    android:icon="@drawable/baseline_help_24"
+                    android:title="Profile"/>
+                <item
+                    android:id="@+id/nav_profile"
+                    android:icon="@drawable/baseline_person_24"
+                    android:title="Help"/>
+                <item
+                    android:id="@+id/nav_logout"
+                    android:icon="@drawable/baseline_logout_24"
+                    android:title="Logout"/>
+    </group>
+</menu>
