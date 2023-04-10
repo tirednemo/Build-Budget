@@ -2,6 +2,7 @@ package com.example.buildbudget;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.net.Uri;
@@ -22,25 +23,47 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.auth.api.identity.BeginSignInRequest;
+import com.google.android.gms.auth.api.identity.BeginSignInResult;
+import com.google.android.gms.auth.api.identity.Identity;
+import com.google.android.gms.auth.api.identity.SignInClient;
+import com.google.android.gms.auth.api.identity.SignInCredential;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.SignInButton;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Objects;
+import java.util.UUID;
 
 public class SignupTabFragment extends Fragment {
     public static final String TAG = "YOUR-TAG-NAME";
-    private FirebaseDatabase database;
+    private static final int REQ_ONE_TAP = 2;
+    private boolean showOneTapUI = true;
+    SignInButton btSignIn;
+    GoogleSignInClient googleSignInClient;
     private FirebaseAuth mAuth;
     private DatabaseReference mDatabase;
+    private SignInClient oneTapClient;
+    private BeginSignInRequest signUpRequest;
     EditText name;
     EditText email;
     EditText password;
@@ -55,6 +78,33 @@ public class SignupTabFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+//        oneTapClient = Identity.getSignInClient((Activity) getContext());
+//        signUpRequest = BeginSignInRequest.builder()
+//                .setGoogleIdTokenRequestOptions(BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
+//                        .setSupported(true).
+//                        .setServerClientId(getString(R.string.your_web_client_id))
+//                        .setFilterByAuthorizedAccounts(false)
+//                        .build())
+//                .build();
+
+//        btSignIn = btSignIn.findViewById(R.id.googlesignup);
+//
+//        // Initialize sign in options the client-id is copied form google-services.json file
+//        GoogleSignInOptions googleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+//                .requestIdToken("438431947620-ecpi41uk3dhhf4mv8g8q993k3vs49ltm.apps.googleusercontent.com")
+//                .requestEmail()
+//                .build();
+//
+//        // Initialize sign in client
+//        googleSignInClient = GoogleSignIn.getClient((Activity) getContext(), googleSignInOptions);
+//
+//        btSignIn.setOnClickListener((View.OnClickListener) view -> {
+//            // Initialize sign in intent
+//            Intent intent = googleSignInClient.getSignInIntent();
+//            // Start activity for result
+//            startActivityForResult(intent, 100);
+//        });
     }
 
     @Override
@@ -67,6 +117,25 @@ public class SignupTabFragment extends Fragment {
         email_status = v.findViewById(R.id.email_invalid);
         password_status = v.findViewById(R.id.password_invalid);
         confirmButton = v.findViewById(R.id.confirm);
+
+//        oneTapClient.beginSignIn(signUpRequest)
+//                .addOnSuccessListener(this, new OnSuccessListener<BeginSignInResult>() {
+//                    @Override
+//                    public void onSuccess(BeginSignInResult result) {
+//                        try {
+//                            startIntentSenderForResult(result.getPendingIntent().getIntentSender(), REQ_ONE_TAP, null, 0, 0, 0);
+//                        } catch (IntentSender.SendIntentException e) {
+//                            Log.e(TAG, "Couldn't start One Tap UI: " + e.getLocalizedMessage());
+//                        }
+//                    }
+//                })
+//                .addOnFailureListener((Activity) getContext(), new OnFailureListener() {
+//                    @Override
+//                    public void onFailure(@NonNull Exception e) {
+//                        // No Google Accounts found. Just continue presenting the signed-out UI.
+//                        Log.d(TAG, e.getLocalizedMessage());
+//                    }
+//                });
 
         password.addTextChangedListener(new TextWatcher() {
             @Override
@@ -93,12 +162,66 @@ public class SignupTabFragment extends Fragment {
     }
 
 //    @Override
-//    public void onStart() {
-//        super.onStart();
-//        // Check if user is signed in (non-null) and update UI accordingly.
-//        FirebaseUser currentUser = mAuth.getCurrentUser();
-//        if(currentUser != null){
-//            reload();
+//    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//        if (requestCode == 100) {
+//            Task<GoogleSignInAccount> signInAccountTask = GoogleSignIn.getSignedInAccountFromIntent(data);
+//            if (signInAccountTask.isSuccessful()) {
+//                try {
+//                    GoogleSignInAccount googleSignInAccount = signInAccountTask.getResult(ApiException.class);
+//                    if (googleSignInAccount != null) {
+//                        AuthCredential authCredential = GoogleAuthProvider.getCredential(googleSignInAccount.getIdToken(), null);
+//                        mAuth.signInWithCredential(authCredential).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+//                            @Override
+//                            public void onComplete(@NonNull Task<AuthResult> task) {
+//                                // Check condition
+//                                if (task.isSuccessful()) {
+//                                    // When task is successful redirect to profile activity display Toast
+//                                    startActivity(new Intent(MainActivity.this, ProfileActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+//                                } else {
+//                                    //
+//                                }
+//                            }
+//                        });
+//                    }
+//                } catch (ApiException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }
+//    }
+//    @Override
+//    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//
+//        switch (requestCode) {
+//            case REQ_ONE_TAP:
+//                try {
+//                    SignInCredential credential = oneTapClient.getSignInCredentialFromIntent(data);
+//                    String idToken = credential.getGoogleIdToken();
+//                    if (idToken != null) {
+//                        // Got an ID token from Google. Use it to authenticate
+//                        // with your backend.
+//                        Log.d(TAG, "Got ID token.");
+//                    }
+//                } catch (ApiException e) {
+//                    switch (e.getStatusCode()) {
+//                        case CommonStatusCodes.CANCELED:
+//                            Log.d(TAG, "One-tap dialog was closed.");
+//                            // Don't re-prompt the user.
+//                            showOneTapUI = false;
+//                            break;
+//                        case CommonStatusCodes.NETWORK_ERROR:
+//                            Log.d(TAG, "One-tap encountered a network error.");
+//                            // Try again or just ignore.
+//                            break;
+//                        default:
+//                            Log.d(TAG, "Couldn't get credential from result."
+//                                    + e.getLocalizedMessage());
+//                            break;
+//                    }
+//                }
+//                break;
 //        }
 //    }
 
@@ -109,8 +232,14 @@ public class SignupTabFragment extends Fragment {
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
                     Log.d(TAG, "createUserWithEmail:success");
-                    FirebaseUser user = mAuth.getCurrentUser();
-
+                    mDatabase = FirebaseDatabase.getInstance("https://build-budget-71a7f-default-rtdb.asia-southeast1.firebasedatabase.app/").getReference();
+                    FirebaseUser usr = mAuth.getCurrentUser();
+                    if (usr != null) {
+                        User user = new User(name, mail);
+                        mDatabase.child("users").child(usr.getUid()).setValue(user);
+                        Intent start = new Intent((Activity) getContext(), DashboardActivity.class);
+                        start.putExtra("com.example.buildbudget.user", usr.getUid());
+                        startActivity(start);                    }
                 } else {
                     try {
                         Log.w(TAG, "createUserWithEmail:failure", task.getException());

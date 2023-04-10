@@ -25,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
             Intent start;
             if (currentUser != null) {
                 start = new Intent(this, DashboardActivity.class);
-                start.putExtra("com.example.buildbudget.user", currentUser);
+                start.putExtra("com.example.buildbudget.user", currentUser.getUid());
             } else {
                 start = new Intent(getApplicationContext(), TutorialActivity.class);
             }

@@ -1,12 +1,12 @@
 package com.example.buildbudget;
 
-public class Accounts {
+public class Account {
     String type;
     String name;
     Double balance;
     String owner;
 
-    Accounts(String type, String name, Double balance){
+    Account(String type, String name, Double balance){
         this.type = type;
         this.name = name;
         this.balance = balance;

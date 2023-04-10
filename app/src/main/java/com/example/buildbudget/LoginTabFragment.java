@@ -100,9 +100,9 @@ public class LoginTabFragment extends Fragment {
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
                     Log.d(TAG, "signInWithEmail:success");
-                    FirebaseUser user = mAuth.getCurrentUser();
+                    FirebaseUser usr = mAuth.getCurrentUser();
                     Intent start = new Intent((Activity) getContext(), DashboardActivity.class);
-                    start.putExtra("com.example.buildbudget.user", user);
+                    start.putExtra("com.example.buildbudget.user", usr.getUid());
                     startActivity(start);
                 } else {
                     try {

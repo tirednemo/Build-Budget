@@ -2,13 +2,13 @@ package com.example.buildbudget;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -18,7 +18,12 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -35,6 +40,9 @@ public class DashboardActivity extends AppCompatActivity {
     ClickListener listener;
     public DrawerLayout drawerLayout;
     public ActionBarDrawerToggle actionBarDrawerToggle;
+    private DatabaseReference mDatabase;
+    public User currentUser;
+    TextView username;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,9 +52,24 @@ public class DashboardActivity extends AppCompatActivity {
         Window window = getWindow();
         window.setStatusBarColor(ContextCompat.getColor(this, R.color.d_grey));
 
-        String username;
+        mDatabase = FirebaseDatabase.getInstance("https://build-budget-71a7f-default-rtdb.asia-southeast1.firebasedatabase.app/").getReference();
+        username = findViewById(R.id.username);
+
         if (getIntent().hasExtra("com.example.buildbudget.user")) {
-            username = getIntent().getExtras().getString("com.example.buildbudget.user");
+            mDatabase.child("users").child(getIntent().getExtras().getString("com.example.buildbudget.user")).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DataSnapshot> task) {
+                    if (!task.isSuccessful()) {
+                        Log.e("firebase", "Error getting data", task.getException());
+                    } else {
+                        Log.d("firebase", String.valueOf(task.getResult().getValue()));
+                        String name = String.valueOf(task.getResult().child("name").getValue());
+                        String email = String.valueOf(task.getResult().child("email").getValue());
+                        currentUser = new User(name, email);
+                        username.setText(currentUser.name);
+                    }
+                }
+            });
         }
 
 //        drawerLayout = findViewById(R.id.my_drawer_layout);
@@ -89,11 +112,9 @@ public class DashboardActivity extends AppCompatActivity {
         });
 
 
-
-
         List<Records> recordList = new ArrayList<>();
         recordList = getRecords();
-        List<Accounts> accountList = new ArrayList<>();
+        List<Account> accountList = new ArrayList<>();
         accountList = getAccounts();
 
         recordRecyclerView = (RecyclerView) findViewById(R.id.date_view);
@@ -142,10 +163,10 @@ public class DashboardActivity extends AppCompatActivity {
     }
 
     // Sample data for accounts
-    private List<Accounts> getAccounts() {
-        List<Accounts> list = new ArrayList<>();
-        list.add(new Accounts("Debit Card", "card1",  160.0));
-        list.add(new Accounts("Cash", "Cash",  40.0));
+    private List<Account> getAccounts() {
+        List<Account> list = new ArrayList<>();
+        list.add(new Account("Debit Card", "card1", 160.0));
+        list.add(new Account("Cash", "Cash", 40.0));
         return list;
     }
 }
@@ -218,19 +239,17 @@ class RecordViewHolder extends RecyclerView.ViewHolder {
 }
 
 
-
-
-
 class AccountItemsRecycleViewAdapter extends RecyclerView.Adapter<AccountViewHolder> {
-    List<Accounts> list = Collections.emptyList();
+    List<Account> list = Collections.emptyList();
     Context context;
     ClickListener listener;
 
-    public AccountItemsRecycleViewAdapter(List<Accounts> list, Context context, ClickListener listener) {
+    public AccountItemsRecycleViewAdapter(List<Account> list, Context context, ClickListener listener) {
         this.list = list;
         this.context = context;
         this.listener = listener;
     }
+
     @NonNull
     @Override
     public AccountViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -259,6 +278,7 @@ class AccountItemsRecycleViewAdapter extends RecyclerView.Adapter<AccountViewHol
         return list.size();
     }
 }
+
 class AccountViewHolder extends RecyclerView.ViewHolder {
     TextView name;
     TextView balance;
