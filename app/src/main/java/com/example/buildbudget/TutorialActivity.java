@@ -2,15 +2,18 @@ package com.example.buildbudget;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
@@ -32,19 +35,22 @@ public class TutorialActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tutorial);
 
+        Window window = getWindow();
+        window.setStatusBarColor(ContextCompat.getColor(this, R.color.d_violet));
+
         featureItems = new ArrayList<>();
-        featureItems.add(new TutorialItemsClass(R.drawable.billing,"Track"));
-        featureItems.add(new TutorialItemsClass(R.drawable.bank,"Sync"));
-        featureItems.add(new TutorialItemsClass(R.drawable.stat,"Analyse"));
-        featureItems.add(new TutorialItemsClass(R.drawable.inspection,"Plan"));
-        featureItems.add(new TutorialItemsClass(R.drawable.toy,"Play"));
-        featureItems.add(new TutorialItemsClass(R.drawable.piggy,"Budget"));
+        featureItems.add(new TutorialItemsClass(R.drawable.billing, "Track"));
+        featureItems.add(new TutorialItemsClass(R.drawable.bank, "Sync"));
+        featureItems.add(new TutorialItemsClass(R.drawable.stat, "Analyse"));
+        featureItems.add(new TutorialItemsClass(R.drawable.inspection, "Plan"));
+        featureItems.add(new TutorialItemsClass(R.drawable.toy, "Play"));
+        featureItems.add(new TutorialItemsClass(R.drawable.piggy, "Budget"));
 
         pager = findViewById(R.id.pager);
-        tabLayout = findViewById(R.id.tablayout);
+        tabLayout = findViewById(R.id.tutorial_tab_layout);
         TutorialItemsPagerAdapter itemsPager_adapter = new TutorialItemsPagerAdapter(this, featureItems);
         pager.setAdapter(itemsPager_adapter);
-        tabLayout.setupWithViewPager(pager,true);
+        tabLayout.setupWithViewPager(pager, true);
 
         nextButton = findViewById(R.id.next);
         nextButton.setOnClickListener(view -> TutorialActivity.this.runOnUiThread(() -> {
@@ -52,9 +58,11 @@ public class TutorialActivity extends AppCompatActivity {
                 pager.setCurrentItem(pager.getCurrentItem() + 1);
                 if (pager.getCurrentItem() == 5)
                     nextButton.setText(R.string.start);
+            } else {
+                System.out.println("here");
+                Intent start = new Intent(getApplicationContext(), AuthenticationActivity.class);
+                startActivity(start);
             }
-            else
-                pager.setCurrentItem(0);//new page
         }));
 
 
@@ -65,7 +73,7 @@ public class TutorialActivity extends AppCompatActivity {
         }));
 
         java.util.Timer timer = new java.util.Timer();
-        timer.scheduleAtFixedRate(new The_slide_timer(),3000,5000);
+        timer.scheduleAtFixedRate(new The_slide_timer(), 3000, 5000);
     }
 
     public class The_slide_timer extends TimerTask {
@@ -95,6 +103,7 @@ class TutorialItemsClass {
     public int getFeatureImage() {
         return feature;
     }
+
     public String getFeatureCaption() {
         return caption;
     }
@@ -135,6 +144,6 @@ class TutorialItemsPagerAdapter extends PagerAdapter {
 
     @Override
     public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
-        container.removeView((View)object);
+        container.removeView((View) object);
     }
 }
