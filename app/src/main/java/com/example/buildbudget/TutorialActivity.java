@@ -2,7 +2,6 @@ package com.example.buildbudget;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -126,7 +125,7 @@ class TutorialItemsPagerAdapter extends PagerAdapter {
     @NonNull
     @Override
     public Object instantiateItem(@NonNull ViewGroup container, int position) {
-        View sliderLayout = View.inflate(context, R.layout.tutorial_items_layout, null);
+        View sliderLayout = View.inflate(context, R.layout.layout_tutorial_items, null);
 
         ImageView feature_image = sliderLayout.findViewById(R.id.feature_image);
         TextView caption = sliderLayout.findViewById(R.id.caption);

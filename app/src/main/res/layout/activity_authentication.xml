@@ -7,21 +7,23 @@
     android:background="@color/Yellow">
 
     <TextView
-        android:id="@+id/auth_heading"
+        android:id="@+id/verify_heading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="15dp"
-        android:layout_marginTop="85dp"
+        android:layout_marginBottom="20dp"
         android:fontFamily="@font/work_sans_semibold"
+        android:text="Welcome"
         android:textColor="@color/Black"
         android:textSize="20sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintBottom_toTopOf="@+id/constraintLayout2"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout2"
         android:layout_width="match_parent"
         android:layout_height="650dp"
-        android:background="@color/White"
+        android:background="@drawable/rounded_corners_base"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
@@ -29,7 +31,7 @@
         <com.google.android.material.card.MaterialCardView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="25dp"
+            android:layout_marginTop="30dp"
             android:layout_marginEnd="25dp"
             app:cardCornerRadius="20dp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -41,16 +43,16 @@
                 android:layout_height="wrap_content"
                 app:tabBackground="@color/White"
                 app:tabIndicatorColor="@color/Black"
-                app:tabIndicatorGravity="center"
                 app:tabIndicatorHeight="50dp"
                 app:tabSelectedTextColor="@color/White"
-                app:tabTextColor="@color/Default" />
+                app:tabTextColor="@color/Default"></com.google.android.material.tabs.TabLayout>
+
         </com.google.android.material.card.MaterialCardView>
 
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/authentication_pager"
             android:layout_width="match_parent"
-            android:layout_height="550dp"
+            android:layout_height="540dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"

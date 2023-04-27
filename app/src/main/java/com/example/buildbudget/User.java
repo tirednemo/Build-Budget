@@ -15,4 +15,8 @@ public class User {
         this.email = email;
         this.photo = "https://i.scdn.co/image/ab6761610000e5eb666a1746919918e63fafb413";
     }
+
+    public void setPhoto(String photouri) {
+        this.photo = photouri;
+    }
 }

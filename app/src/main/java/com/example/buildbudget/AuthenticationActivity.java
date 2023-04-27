@@ -33,7 +33,7 @@ public class AuthenticationActivity extends AppCompatActivity {
 
         tabLayout.addTab(tabLayout.newTab().setText("Sign up"));
         tabLayout.addTab(tabLayout.newTab().setText("Sign in"));
-        TextView heading = findViewById(R.id.auth_heading);
+        TextView heading = findViewById(R.id.verify_heading);
         if (pager.getCurrentItem() == 0)
             heading.setText("Registration");
         else

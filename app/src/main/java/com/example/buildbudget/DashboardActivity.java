@@ -1,6 +1,7 @@
 package com.example.buildbudget;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,36 +14,39 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
+import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.database.DataSnapshot;
+import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-public class DashboardActivity extends AppCompatActivity {
+public class DashboardActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+
+    DrawerLayout drawer;
 
     FloatingActionButton mAddRecord, mAddOCR, mAddManual;
     TextView addText, OCRText, manualText;
-    Boolean isAllFabsVisible;
+    Boolean isAllFABsVisible;
+
     RecyclerView accountRecyclerView, recordRecyclerView;
     AccountItemsRecycleViewAdapter accountsRecyclerViewAdapter;
     RecordItemsRecycleViewAdapter recordsRecyclerViewAdapter;
+
     ClickListener listener;
-    public DrawerLayout drawerLayout;
-    public ActionBarDrawerToggle actionBarDrawerToggle;
-    private DatabaseReference mDatabase;
-    public User currentUser;
+    DatabaseReference mDatabase;
+    User currentUser;
     TextView username;
+    String uid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,31 +56,54 @@ public class DashboardActivity extends AppCompatActivity {
         Window window = getWindow();
         window.setStatusBarColor(ContextCompat.getColor(this, R.color.d_grey));
 
+// TODO: Retrieve user info from intent
+
         mDatabase = FirebaseDatabase.getInstance("https://build-budget-71a7f-default-rtdb.asia-southeast1.firebasedatabase.app/").getReference();
-        username = findViewById(R.id.username);
+        View navView = findViewById(R.id.nav_view);
+        View navHead = ((NavigationView) navView).getHeaderView(0);
+        TextView username = navHead.findViewById(R.id.username);
 
         if (getIntent().hasExtra("com.example.buildbudget.user")) {
-            mDatabase.child("users").child(getIntent().getExtras().getString("com.example.buildbudget.user")).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<DataSnapshot> task) {
-                    if (!task.isSuccessful()) {
-                        Log.e("firebase", "Error getting data", task.getException());
-                    } else {
-                        Log.d("firebase", String.valueOf(task.getResult().getValue()));
-                        String name = String.valueOf(task.getResult().child("name").getValue());
-                        String email = String.valueOf(task.getResult().child("email").getValue());
-                        currentUser = new User(name, email);
-                        username.setText(currentUser.name);
-                    }
-                }
-            });
+            uid = getIntent().getExtras().getString("com.example.buildbudget.user");
+            mDatabase.child("users")
+                    .child(uid)
+                    .get().addOnCompleteListener(task -> {
+                        if (!task.isSuccessful()) {
+                            Log.e("firebase", "Error getting data", task.getException());
+                        } else {
+                            Log.d("firebase", String.valueOf(task.getResult().getValue()));
+                            String name = String.valueOf(task.getResult().child("name").getValue());
+                            String email = String.valueOf(task.getResult().child("email").getValue());
+                            String photo = String.valueOf(task.getResult().child("photo").getValue());
+                            currentUser = new User(name, email);
+                            if (photo.length() > 0)
+                                currentUser.setPhoto(photo);
+//                            username.setText(currentUser.name);
+                            username.setText("halum");
+                        }
+                    });
         }
 
-//        drawerLayout = findViewById(R.id.my_drawer_layout);
-//        actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.nav_open, R.string.nav_close);
-//        drawerLayout.addDrawerListener(actionBarDrawerToggle);
-//        actionBarDrawerToggle.syncState();
+// TODO: Navigation Drawer for sidebar
 
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        drawer = findViewById(R.id.drawer_layout);
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.open_nav, R.string.close_nav);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+
+//        if (savedInstanceState == null) {
+//            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();
+//            navigationView.setCheckedItem(R.id.nav_home);
+//        }
+
+// TODO:  Floating Action Button for new record
 
         mAddRecord = findViewById(R.id.add_record);
         mAddOCR = findViewById(R.id.ocr_add);
@@ -84,23 +111,23 @@ public class DashboardActivity extends AppCompatActivity {
         addText = findViewById(R.id.add_record_text);
         OCRText = findViewById(R.id.ocr_add_text);
         manualText = findViewById(R.id.manual_add_text);
-        isAllFabsVisible = false;
+        isAllFABsVisible = false;
 
         mAddRecord.setOnClickListener(view -> {
-            if (!isAllFabsVisible) {
+            if (!isAllFABsVisible) {
                 mAddOCR.show();
                 mAddManual.show();
                 addText.setVisibility(View.VISIBLE);
                 OCRText.setVisibility(View.VISIBLE);
                 manualText.setVisibility(View.VISIBLE);
-                isAllFabsVisible = true;
+                isAllFABsVisible = true;
             } else {
                 mAddOCR.hide();
                 mAddManual.hide();
                 addText.setVisibility(View.GONE);
                 OCRText.setVisibility(View.GONE);
                 manualText.setVisibility(View.GONE);
-                isAllFabsVisible = false;
+                isAllFABsVisible = false;
             }
         });
 
@@ -108,47 +135,47 @@ public class DashboardActivity extends AppCompatActivity {
             //ocr activity
         });
         mAddManual.setOnClickListener(view -> {
-            //manual activity
+            Intent start = new Intent(this, TransactionActivity.class);
+            startActivity(start);
         });
 
+// TODO: Recycler View for accounts and date-ordered records
 
-        List<Records> recordList = new ArrayList<>();
-        recordList = getRecords();
-        List<Account> accountList = new ArrayList<>();
+        List<Account> accountList;
         accountList = getAccounts();
+        List<Records> recordList;
+        recordList = getRecords();
 
-        recordRecyclerView = (RecyclerView) findViewById(R.id.date_view);
-        accountRecyclerView = (RecyclerView) findViewById(R.id.accounts_view);
-        listener = new ClickListener() {
-//            @Override
-//            public void click(int index) {
-//                Toast.makeText(DashboardActivity.this, "clicked item index is " + index, Toast.LENGTH_LONG).show();
-//            }
-        };
-
-        recordsRecyclerViewAdapter = new RecordItemsRecycleViewAdapter(recordList, getApplication(), listener);
-        recordRecyclerView.setAdapter(recordsRecyclerViewAdapter);
-        recordRecyclerView.setLayoutManager(new LinearLayoutManager(DashboardActivity.this));
-
+        accountRecyclerView = findViewById(R.id.accounts_view);
         accountsRecyclerViewAdapter = new AccountItemsRecycleViewAdapter(accountList, getApplication(), listener);
         accountRecyclerView.setAdapter(accountsRecyclerViewAdapter);
         accountRecyclerView.setLayoutManager(new LinearLayoutManager(DashboardActivity.this, LinearLayoutManager.HORIZONTAL, false));
+
+        recordRecyclerView = findViewById(R.id.date_view);
+        recordsRecyclerViewAdapter = new RecordItemsRecycleViewAdapter(recordList, getApplication(), listener);
+        recordRecyclerView.setAdapter(recordsRecyclerViewAdapter);
+        recordRecyclerView.setLayoutManager(new LinearLayoutManager(DashboardActivity.this, LinearLayoutManager.VERTICAL, false));
     }
 
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-
-        if (actionBarDrawerToggle.onOptionsItemSelected(item)) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
     }
+
+
+    // Sample data for accounts
+    private List<Account> getAccounts() {
+        List<Account> list = new ArrayList<>();
+        list.add(new Account("Debit Card", "card1", 160.0));
+        list.add(new Account("Cash", "Cash", 40.0));
+        return list;
+    }
+
 
     // Sample data for records
     private List<Records> getRecords() {
@@ -162,85 +189,77 @@ public class DashboardActivity extends AppCompatActivity {
         return list;
     }
 
-    // Sample data for accounts
-    private List<Account> getAccounts() {
-        List<Account> list = new ArrayList<>();
-        list.add(new Account("Debit Card", "card1", 160.0));
-        list.add(new Account("Cash", "Cash", 40.0));
-        return list;
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+//            case R.id.nav_home:
+//                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();
+//                break;
+//            case R.id.nav_acc:
+//                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();
+//                break;
+//            case R.id.nav_banksync:
+//                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();
+//                break;
+//            case R.id.nav_stats:
+//                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();
+//                break;
+//
+//            case R.id.nav_budget:
+//                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();
+//                break;
+//            case R.id.nav_debts:
+//                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();
+//                break;
+//            case R.id.nav_ppay:
+//                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();
+//                break;
+//            case R.id.nav_goals:
+//                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();
+//                break;
+//            case R.id.nav_invests:
+//                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();
+//                break;
+//
+//            case R.id.nav_currency_ex:
+//                break;
+//            case R.id.nav_stock_ex:
+//                break;
+//
+//            case R.id.nav_loyal:
+//                break;
+//            case R.id.nav_warranty:
+//                break;
+
+            case R.id.nav_settings:
+                Intent start = new Intent(this, SettingsActivity.class);
+                start.putExtra("com.example.buildbudget.uid", uid);
+                startActivity(start);
+                break;
+//            case R.id.nav_help:
+//                break;
+            case R.id.nav_logout:
+                FirebaseAuth.getInstance().signOut();
+                Intent startt = new Intent(this, AuthenticationActivity.class);
+                startActivity(startt);
+                break;
+        }
+
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
     }
 }
 
-class RecordItemsRecycleViewAdapter extends RecyclerView.Adapter<RecordViewHolder> {
-
-    List<Records> list = Collections.emptyList();
-    Context context;
-    ClickListener listener;
-
-    public RecordItemsRecycleViewAdapter(List<Records> list, Context context, ClickListener listener) {
-        this.list = list;
-        this.context = context;
-        this.listener = listener;
-    }
-
-    @Override
-    public RecordViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-
-        Context context = parent.getContext();
-        LayoutInflater inflater = LayoutInflater.from(context);
-        RecordViewHolder viewHolder = new RecordViewHolder(inflater.inflate(R.layout.record_items_layout, parent, false));
-        return viewHolder;
-    }
-
-    @Override
-    public void onBindViewHolder(@NonNull RecordViewHolder viewHolder, int position) {
-        final int index = viewHolder.getAdapterPosition();
-        viewHolder.title.setText(list.get(position).title);
-        viewHolder.account.setText(list.get(position).account);
-        viewHolder.amount.setText(list.get(position).amount + "");
-        viewHolder.view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                listener.click(index);
-            }
-        });
-    }
-
-    @Override
-    public int getItemCount() {
-        return list.size();
-    }
-
-    @Override
-    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
-        super.onAttachedToRecyclerView(recyclerView);
-    }
-}
 
 class ClickListener {
     public void click(int index) {
     }
 }
 
-class RecordViewHolder extends RecyclerView.ViewHolder {
-    TextView title;
-    TextView account;
-    TextView amount;
-    View view;
-
-    RecordViewHolder(View itemView) {
-        super(itemView);
-
-        title = (TextView) itemView.findViewById(R.id.textView2);
-        account = (TextView) itemView.findViewById(R.id.textView3);
-        amount = (TextView) itemView.findViewById(R.id.textView4);
-        view = itemView;
-    }
-}
-
 
 class AccountItemsRecycleViewAdapter extends RecyclerView.Adapter<AccountViewHolder> {
-    List<Account> list = Collections.emptyList();
+    List<Account> list;
     Context context;
     ClickListener listener;
 
@@ -255,21 +274,15 @@ class AccountItemsRecycleViewAdapter extends RecyclerView.Adapter<AccountViewHol
     public AccountViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
-        AccountViewHolder viewHolder = new AccountViewHolder(inflater.inflate(R.layout.account_cards_layout, parent, false));
-        return viewHolder;
+        return new AccountViewHolder(inflater.inflate(R.layout.layout_account_cards, parent, false));
     }
 
     @Override
     public void onBindViewHolder(@NonNull AccountViewHolder viewHolder, int position) {
         final int index = viewHolder.getAdapterPosition();
         viewHolder.name.setText(list.get(position).name);
-        viewHolder.balance.setText(list.get(position).balance + "");
-        viewHolder.view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                listener.click(index);
-            }
-        });
+        viewHolder.balance.setText(String.valueOf(list.get(position).balance));
+        viewHolder.view.setOnClickListener(view -> listener.click(index));
 
     }
 
@@ -279,6 +292,7 @@ class AccountItemsRecycleViewAdapter extends RecyclerView.Adapter<AccountViewHol
     }
 }
 
+
 class AccountViewHolder extends RecyclerView.ViewHolder {
     TextView name;
     TextView balance;
@@ -287,8 +301,63 @@ class AccountViewHolder extends RecyclerView.ViewHolder {
     AccountViewHolder(View itemView) {
         super(itemView);
 
-        name = (TextView) itemView.findViewById(R.id.account_name);
-        balance = (TextView) itemView.findViewById(R.id.account_balance);
+        name = itemView.findViewById(R.id.account_name);
+        balance = itemView.findViewById(R.id.account_balance);
         view = itemView;
     }
 }
+
+
+class RecordItemsRecycleViewAdapter extends RecyclerView.Adapter<RecordViewHolder> {
+
+    List<Records> list;
+    Context context;
+    ClickListener listener;
+
+    public RecordItemsRecycleViewAdapter(List<Records> list, Context context, ClickListener listener) {
+        this.list = list;
+        this.context = context;
+        this.listener = listener;
+    }
+
+    @NonNull
+    @Override
+    public RecordViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+
+        Context context = parent.getContext();
+        LayoutInflater inflater = LayoutInflater.from(context);
+        return new RecordViewHolder(inflater.inflate(R.layout.layout_record_items, parent, false));
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull RecordViewHolder viewHolder, int position) {
+        final int index = viewHolder.getAdapterPosition();
+        viewHolder.title.setText(list.get(position).title);
+        viewHolder.account.setText(list.get(position).account);
+        viewHolder.amount.setText(String.valueOf(list.get(position).amount));
+        viewHolder.view.setOnClickListener(view -> listener.click(index));
+    }
+
+    @Override
+    public int getItemCount() {
+        return list.size();
+    }
+}
+
+
+class RecordViewHolder extends RecyclerView.ViewHolder {
+    TextView title;
+    TextView account;
+    TextView amount;
+    View view;
+
+    RecordViewHolder(View itemView) {
+        super(itemView);
+
+        title = itemView.findViewById(R.id.textView2);
+        account = itemView.findViewById(R.id.textView3);
+        amount = itemView.findViewById(R.id.textView4);
+        view = itemView;
+    }
+}
+

@@ -39,6 +39,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.ActionCodeSettings;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -232,14 +233,36 @@ public class SignupTabFragment extends Fragment {
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
                     Log.d(TAG, "createUserWithEmail:success");
-                    mDatabase = FirebaseDatabase.getInstance("https://build-budget-71a7f-default-rtdb.asia-southeast1.firebasedatabase.app/").getReference();
-                    FirebaseUser usr = mAuth.getCurrentUser();
-                    if (usr != null) {
-                        User user = new User(name, mail);
-                        mDatabase.child("users").child(usr.getUid()).setValue(user);
-                        Intent start = new Intent((Activity) getContext(), DashboardActivity.class);
-                        start.putExtra("com.example.buildbudget.user", usr.getUid());
-                        startActivity(start);                    }
+
+                    ActionCodeSettings actionCodeSettings =
+                            ActionCodeSettings.newBuilder()
+                                    .setUrl("https://buildbudget.page.link/bjYi")
+                                    .setHandleCodeInApp(true)
+                                    .setIOSBundleId("com.example.buildbudget")
+                                    .setAndroidPackageName(
+                                            "com.example.buildbudget",
+                                            false,
+                                            null)
+                                    .build();
+
+
+                    FirebaseAuth auth = FirebaseAuth.getInstance();
+                    auth.sendSignInLinkToEmail(mail, actionCodeSettings)
+                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                Log.d(TAG, "Email sent.");
+
+//                                FirebaseUser usr = mAuth.getCurrentUser();
+//                                Intent start = new Intent((Activity) getContext(), VerificationActivity.class);
+//                                start.putExtra("com.example.buildbudget.register", usr.getUid());
+//                                start.putExtra("com.example.buildbudget.name", name);
+//                                start.putExtra("com.example.buildbudget.mail", mail);
+//                                startActivity(start);
+                            }
+                        }
+                    });
                 } else {
                     try {
                         Log.w(TAG, "createUserWithEmail:failure", task.getException());
