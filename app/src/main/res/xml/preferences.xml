@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ListPreference
+        android:defaultValue="1"
+        android:entries="@array/Language"
+        android:entryValues="@array/Language"
+        android:key="language_preference"
+        android:summary="%s"
+        android:title="App language" />
+    <SwitchPreference
+        android:defaultValue="false"
+        android:key="appearance_preference"
+        android:title="Dark mode" />
+
+    <Preference
+        android:key="account_preference"
+        android:title="Account">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetClass="com.example.buildbudget.SettingsActivity_Account"
+            android:targetPackage="com.example.buildbudget" />
+    </Preference>
+    <Preference
+        android:summary="Set up PIN or Fingerprint"
+        android:title="Security" />
+    <ListPreference
+        android:defaultValue="1"
+        android:entries="@array/Currency"
+        android:entryValues="@array/currencyAlias"
+        android:key="currency_preference"
+        android:summary="%s"
+        android:title="Default currency" />
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="notifications_preference"
+        android:title="Push notifications" />
+    <Preference
+        android:summary="Version 1.0.0"
+        android:title="About" />
+</PreferenceScreen>
