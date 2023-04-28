@@ -23,20 +23,8 @@
             android:id="@+id/me"
             android:layout_width="70dp"
             android:layout_height="70dp"
-            app:srcCompat="@drawable/elmo" />
+            app:srcCompat="@drawable/test_account" />
     </com.google.android.material.card.MaterialCardView>
-
-    <TextView
-        android:id="@+id/username"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="12dp"
-        android:layout_marginTop="40dp"
-        android:text="TextView"
-        android:textColor="@color/Black"
-        android:textSize="14sp"
-        app:layout_constraintStart_toEndOf="@+id/materialCardView2"
-        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/dough"

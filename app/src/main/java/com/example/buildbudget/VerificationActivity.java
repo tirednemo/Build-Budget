@@ -138,4 +138,13 @@ public class VerificationActivity extends AppCompatActivity {
             }
 //        }
     }
+    public void onBackPressed(View v)
+    {
+        finish();
+    }
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+    }
 }

@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -21,6 +22,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -35,6 +37,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
     DrawerLayout drawer;
 
     FloatingActionButton mAddRecord, mAddOCR, mAddManual;
+    ImageView mNotification;
     TextView addText, OCRText, manualText;
     Boolean isAllFABsVisible;
 
@@ -46,7 +49,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
     DatabaseReference mDatabase;
     User currentUser;
     TextView username;
-    String uid;
+    String uid, name, email, photo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,12 +59,14 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         Window window = getWindow();
         window.setStatusBarColor(ContextCompat.getColor(this, R.color.d_grey));
 
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        View navHead = navigationView.getHeaderView(0);
+        ImageView me = navHead.findViewById(R.id.me);
+        mNotification = findViewById(R.id.notification);
+
 // TODO: Retrieve user info from intent
 
         mDatabase = FirebaseDatabase.getInstance("https://build-budget-71a7f-default-rtdb.asia-southeast1.firebasedatabase.app/").getReference();
-        View navView = findViewById(R.id.nav_view);
-        View navHead = ((NavigationView) navView).getHeaderView(0);
-        TextView username = navHead.findViewById(R.id.username);
 
         if (getIntent().hasExtra("com.example.buildbudget.user")) {
             uid = getIntent().getExtras().getString("com.example.buildbudget.user");
@@ -72,31 +77,39 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                             Log.e("firebase", "Error getting data", task.getException());
                         } else {
                             Log.d("firebase", String.valueOf(task.getResult().getValue()));
-                            String name = String.valueOf(task.getResult().child("name").getValue());
-                            String email = String.valueOf(task.getResult().child("email").getValue());
-                            String photo = String.valueOf(task.getResult().child("photo").getValue());
+                            name = String.valueOf(task.getResult().child("name").getValue());
+                            email = String.valueOf(task.getResult().child("email").getValue());
+                            photo = String.valueOf(task.getResult().child("photo").getValue());
                             currentUser = new User(name, email);
                             if (photo.length() > 0)
                                 currentUser.setPhoto(photo);
-//                            username.setText(currentUser.name);
-                            username.setText("halum");
+                            Glide.with(getApplicationContext())
+                                    .load(photo)
+                                    .into(me);
                         }
                     });
         }
 
 // TODO: Navigation Drawer for sidebar
+        me.setOnClickListener(view -> {
+            Intent start = new Intent(this, ProfileActivity.class);
+            startActivity(start);
+        });
+        navigationView.setNavigationItemSelectedListener(this);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         drawer = findViewById(R.id.drawer_layout);
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.open_nav, R.string.close_nav);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
+
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.menu);
+
 
 //        if (savedInstanceState == null) {
 //            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();
@@ -136,6 +149,11 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         });
         mAddManual.setOnClickListener(view -> {
             Intent start = new Intent(this, TransactionActivity.class);
+            startActivity(start);
+        });
+
+        mNotification.setOnClickListener(view -> {
+            Intent start = new Intent(this, NotificationsActivity.class);
             startActivity(start);
         });
 
@@ -196,9 +214,11 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 //            case R.id.nav_home:
 //                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();
 //                break;
-//            case R.id.nav_acc:
-//                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();
-//                break;
+            case R.id.nav_acc:
+                Intent startt = new Intent(this, AccountsActivity.class);
+                startt.putExtra("com.example.buildbudget.uid", uid);
+                startActivity(startt);
+                break;
 //            case R.id.nav_banksync:
 //                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();
 //                break;
@@ -241,8 +261,8 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 //                break;
             case R.id.nav_logout:
                 FirebaseAuth.getInstance().signOut();
-                Intent startt = new Intent(this, AuthenticationActivity.class);
-                startActivity(startt);
+                Intent starttt = new Intent(this, AuthenticationActivity.class);
+                startActivity(starttt);
                 break;
         }
 

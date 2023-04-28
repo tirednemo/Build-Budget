@@ -1,6 +1,7 @@
 package com.example.buildbudget;
 
 import android.os.Bundle;
+import android.view.View;
 import android.view.Window;
 import android.widget.TextView;
 
@@ -69,6 +70,15 @@ public class AuthenticationActivity extends AppCompatActivity {
             }
         });
     }
+    public void onBackPressed(View v)
+    {
+        finish();
+    }
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+    }
 }
 
 class AuthenticationPagerAdapter extends FragmentStateAdapter {
@@ -89,4 +99,5 @@ class AuthenticationPagerAdapter extends FragmentStateAdapter {
     public int getItemCount() {
         return 2;
     }
+
 }

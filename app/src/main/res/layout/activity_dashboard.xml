@@ -14,36 +14,25 @@
         android:layout_height="match_parent"
         android:background="@color/Grey">
 
-        <ImageView
-            android:id="@+id/imageView6"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/menu"></ImageView>
-
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="56dp"
             android:layout_height="56dp"
-            android:background="@null"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
             android:elevation="4dp"
-            android:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
-            android:id="@+id/imageView5"
+            android:id="@+id/notification"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:layout_marginStart="10dp"
+            android:layout_marginStart="2dp"
             android:layout_marginTop="16dp"
-            app:layout_constraintStart_toEndOf="@+id/imageView6"
+            app:layout_constraintStart_toEndOf="@+id/toolbar"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/bell" />
+            app:srcCompat="@drawable/alarm" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/add_record"
@@ -51,6 +40,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
+            android:background="@null"
             android:backgroundTint="@color/Default"
             android:src="@drawable/add"
             app:fabSize="mini"
@@ -78,7 +68,7 @@
             android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
             android:backgroundTint="@color/Default"
-            android:src="@drawable/ocr"
+            android:src="@drawable/rescan"
             android:visibility="gone"
             app:fabSize="mini"
             app:layout_constraintEnd_toEndOf="parent"
@@ -105,7 +95,7 @@
             android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
             android:backgroundTint="@color/Default"
-            android:src="@drawable/manual"
+            android:src="@drawable/compose"
             android:visibility="gone"
             app:fabSize="mini"
             app:layout_constraintEnd_toEndOf="parent"
@@ -178,6 +168,7 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:background="@color/Grey"
+        android:visibility="visible"
         app:headerLayout="@layout/nav_header"
         app:itemIconTint="@color/Black"
         app:itemTextColor="@color/Black"

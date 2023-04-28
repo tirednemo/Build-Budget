@@ -6,6 +6,20 @@
     android:layout_height="match_parent"
     android:background="@color/Yellow">
 
+    <ImageButton
+        android:id="@+id/back6"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginBottom="5dp"
+        android:background="@null"
+        android:onClick="onBackPressed"
+        android:padding="5dp"
+        android:scaleType="fitStart"
+        app:layout_constraintBottom_toTopOf="@+id/verify_heading"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/back" />
+
     <TextView
         android:id="@+id/verify_heading"
         android:layout_width="wrap_content"

@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.preference.PreferenceScreen;
 
 import android.util.Log;
+import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.EditText;
@@ -36,5 +37,15 @@ public class SettingsActivity extends AppCompatActivity {
             // below line is to inflate our fragment.
             getFragmentManager().beginTransaction().add(R.id.preferences_container, new SettingsFragment()).commit();
         }
+    }
+
+    public void onBackPressed(View v)
+    {
+        finish();
+    }
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
     }
 }
