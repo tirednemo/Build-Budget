@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/constraintLayout7"
+    android:layout_width="match_parent"
+    android:layout_height="650dp"
+    android:background="@drawable/rounded_corners_base"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent">
+
+    <Button
+        android:id="@+id/confirm_button"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="25dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="25dp"
+        android:background="@null"
+        android:text="CONFIRM"
+        android:textColor="@color/White"
+        app:backgroundTint="@null"
+        app:cornerRadius="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/confirm_balance" />
+
+    <TextView
+        android:id="@+id/confirm_balance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="147dp"
+        android:layout_marginTop="80dp"
+        android:layout_marginEnd="147dp"
+        android:fontFamily="@font/work_sans_semibold"
+        android:text="Current Balance:"
+        android:textColor="@color/Black"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv3" />
+
+    <ImageButton
+        android:id="@+id/imageButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="190dp"
+        android:background="@drawable/rounded_shadow_button"
+        android:backgroundTint="@color/Teal"
+        android:cropToPadding="true"
+        android:elevation="5dp"
+        android:scaleType="centerInside"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/plus" />
+
+    <Button
+        android:id="@+id/imageButton4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="148dp"
+        android:layout_marginTop="110dp"
+        android:background="@null"
+        android:backgroundTint="@color/Magenta"
+        android:elevation="5dp"
+        android:fontFamily="@font/work_sans_semibold"
+        android:text="account1"
+        android:textAllCaps="false"
+        android:textSize="16sp"
+        app:cornerRadius="20dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/imageButton5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="65dp"
+        android:layout_marginEnd="70dp"
+        android:background="@null"
+        android:backgroundTint="@color/Violet"
+        android:elevation="5dp"
+        android:fontFamily="@font/work_sans_semibold"
+        android:text="account2"
+        android:textAllCaps="false"
+        android:textSize="16sp"
+        android:visibility="gone"
+        app:cornerRadius="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/imageButton2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/rounded_shadow_button"
+        android:backgroundTint="@color/Orange"
+        android:elevation="5dp"
+        android:scaleType="centerInside"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageButton"
+        app:srcCompat="@drawable/minus" />
+
+    <ImageButton
+        android:id="@+id/imageButton3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/rounded_shadow_button"
+        android:backgroundTint="@color/Yellow"
+        android:elevation="5dp"
+        android:scaleType="centerInside"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageButton2"
+        app:srcCompat="@drawable/swap" />
+
+    <EditText
+        android:id="@+id/tv3"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="100dp"
+        android:layout_marginTop="250dp"
+        android:layout_marginEnd="100dp"
+        android:background="@android:color/transparent"
+        android:fontFamily="@font/work_sans_semibold"
+        android:hint="$0.00"
+        android:inputType="number|numberDecimal"
+        android:textAlignment="center"
+        android:textColor="@color/Black"
+        android:textSize="48sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

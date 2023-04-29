@@ -37,7 +37,7 @@ public class SettingsActivity_Account extends AppCompatActivity {
 
         mDatabase = FirebaseDatabase.getInstance("https://build-budget-71a7f-default-rtdb.asia-southeast1.firebasedatabase.app/").getReference();
         username = findViewById(R.id.textView6);
-        photo = findViewById(R.id.notification);
+        photo = findViewById(R.id.category);
         name = findViewById(R.id.namee);
         email = findViewById(R.id.emaill);
 

@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/constraintLayout7"
+    android:layout_width="match_parent"
+    android:layout_height="650dp"
+    android:background="@drawable/rounded_corners_base"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="110dp">
+
+            <ImageView
+                android:id="@+id/imageView2"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="20dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/planner" />
+
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="100dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <DatePicker
+                    android:id="@+id/date_picker"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="4"
+                    android:calendarViewShown="true"
+                    android:spinnersShown="false"
+                    android:visibility="gone" />
+
+                <TimePicker
+                    android:id="@+id/time_picker"
+                    android:layout_width="360dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="4"
+                    android:visibility="gone" />
+
+            </FrameLayout>
+
+            <TextView
+                android:id="@+id/textView8"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="15dp"
+                android:fontFamily="@font/work_sans_semibold"
+                android:labelFor="@id/email"
+                android:text="Date"
+                android:textColor="@color/Black"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toEndOf="@+id/imageView2"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <EditText
+                android:id="@+id/email"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:autofillHints=""
+                android:ems="10"
+                android:fontFamily="@font/work_sans"
+                android:inputType="textEmailAddress"
+                android:paddingStart="10dp"
+                android:textColor="@color/Black"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toEndOf="@+id/imageView2"
+                app:layout_constraintTop_toBottomOf="@+id/textView8" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/imageView2"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="20dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/test_account" />
+
+            <TextView
+                android:id="@+id/textView8"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="15dp"
+                android:fontFamily="@font/work_sans_semibold"
+                android:labelFor="@id/email"
+                android:text="Payee"
+                android:textColor="@color/Black"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toEndOf="@+id/imageView2"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <EditText
+                android:id="@+id/email"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:autofillHints=""
+                android:ems="10"
+                android:fontFamily="@font/work_sans"
+                android:inputType="textEmailAddress"
+                android:paddingStart="10dp"
+                android:textColor="@color/Black"
+                android:textColorHint="@color/Disabled"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toEndOf="@+id/imageView2"
+                app:layout_constraintTop_toBottomOf="@+id/textView8" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/imageView2"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="20dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/notes" />
+
+            <TextView
+                android:id="@+id/textView8"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="15dp"
+                android:fontFamily="@font/work_sans_semibold"
+                android:labelFor="@id/email"
+                android:text="Note"
+                android:textColor="@color/Black"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toEndOf="@+id/imageView2"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <EditText
+                android:id="@+id/email"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:autofillHints=""
+                android:ems="10"
+                android:fontFamily="@font/work_sans"
+                android:inputType="textEmailAddress"
+                android:paddingStart="10dp"
+                android:textColor="@color/Black"
+                android:textColorHint="@color/Disabled"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toEndOf="@+id/imageView2"
+                app:layout_constraintTop_toBottomOf="@+id/textView8" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/imageView2"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="20dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/inspection" />
+
+            <TextView
+                android:id="@+id/textView8"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="15dp"
+                android:fontFamily="@font/work_sans_semibold"
+                android:labelFor="@id/email"
+                android:text="Status"
+                android:textColor="@color/Black"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toEndOf="@+id/imageView2"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <Spinner
+                android:id="@+id/email"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:autofillHints=""
+                android:paddingStart="10dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toEndOf="@+id/imageView2"
+                app:layout_constraintTop_toBottomOf="@+id/textView8" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/imageView2"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="20dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/cheque" />
+
+            <TextView
+                android:id="@+id/textView8"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="15dp"
+                android:fontFamily="@font/work_sans_semibold"
+                android:labelFor="@id/email"
+                android:text="Attachments"
+                android:textColor="@color/Black"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toEndOf="@+id/imageView2"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <EditText
+                android:id="@+id/email"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:autofillHints=""
+                android:ems="10"
+                android:fontFamily="@font/work_sans"
+                android:inputType="textEmailAddress"
+                android:paddingStart="10dp"
+                android:textColor="@color/Black"
+                android:textColorHint="@color/Disabled"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toEndOf="@+id/imageView2"
+                app:layout_constraintTop_toBottomOf="@+id/textView8" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <Button
+            android:id="@+id/continuee"
+            android:layout_width="match_parent"
+            android:layout_height="58dp"
+            android:layout_marginStart="25dp"
+            android:layout_marginTop="150dp"
+            android:layout_marginEnd="25dp"
+            android:backgroundTint="@color/Black"
+            android:enabled="false"
+            android:fontFamily="@font/work_sans_medium"
+            android:text="Confirm"
+            android:textAllCaps="false"
+            android:textColor="@color/White"
+            android:textSize="18sp"
+            app:cornerRadius="20dp" />
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

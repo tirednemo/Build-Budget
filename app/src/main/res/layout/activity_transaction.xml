@@ -7,86 +7,59 @@
     android:background="@color/Teal">
 
     <ImageButton
-        android:id="@+id/back7"
+        android:id="@+id/back8"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_marginStart="10dp"
-        android:layout_marginBottom="51dp"
+        android:layout_marginBottom="5dp"
         android:background="@null"
         android:onClick="onBackPressed"
         android:padding="5dp"
         android:scaleType="fitStart"
-        app:layout_constraintBottom_toTopOf="@+id/constraintLayout7"
+        app:layout_constraintBottom_toTopOf="@+id/transaction_heading"
         app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@drawable/back" />
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraintLayout7"
-        android:layout_width="match_parent"
-        android:layout_height="650dp"
-        android:background="@drawable/rounded_corners_base"
-        tools:layout_editor_absoluteY="241dp">
-
-        <Button
-            android:id="@+id/confirm_button"
-            android:layout_width="227dp"
-            android:layout_height="52dp"
-            android:background="@color/Black"
-            android:text="CONFIRM"
-            android:textColor="@color/White"
-            app:backgroundTint="@null"
-            tools:layout_editor_absoluteX="111dp"
-            tools:layout_editor_absoluteY="505dp" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <ImageButton
-        android:id="@+id/button2"
-        android:layout_width="53dp"
-        android:layout_height="48dp"
-        android:background="@color/Orange"
-        android:scaleType="fitXY"
-        android:src="@drawable/minus"
-        tools:layout_editor_absoluteX="13dp"
-        tools:layout_editor_absoluteY="584dp" />
-
-    <ImageButton
-        android:id="@+id/button3"
-        android:layout_width="53dp"
-        android:layout_height="48dp"
-        android:background="@color/Grey"
-        android:scaleType="fitXY"
-        android:src="@drawable/swap"
-        tools:layout_editor_absoluteX="13dp"
-        tools:layout_editor_absoluteY="646dp" />
-
-
-    <ImageButton
-        android:id="@+id/button1"
-        android:layout_width="53dp"
-        android:layout_height="48dp"
-        android:background="@color/Yellow"
-        android:scaleType="fitXY"
-        android:src="@drawable/plus"
-        tools:layout_editor_absoluteX="13dp"
-        tools:layout_editor_absoluteY="522dp" />
-
-    <EditText
-        android:id="@+id/transactionAmount"
-        android:layout_width="261dp"
-        android:layout_height="41dp"
-        android:ems="10"
-        android:hint="0.00"
-        android:inputType="textPersonName"
-        tools:layout_editor_absoluteX="87dp"
-        tools:layout_editor_absoluteY="586dp" />
-
     <TextView
-        android:id="@+id/confirm_balance"
+        android:id="@+id/transaction_heading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Current Balance:"
-        android:textStyle="bold"
-        tools:layout_editor_absoluteX="147dp"
-        tools:layout_editor_absoluteY="675dp" />
+        android:layout_marginStart="15dp"
+        android:layout_marginBottom="20dp"
+        android:fontFamily="@font/work_sans_semibold"
+        android:text="Transaction"
+        android:textColor="@color/Black"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@+id/transaction_pager"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/wrap"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="50dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/transaction_heading"
+        app:strokeColor="@color/White"
+        app:strokeWidth="1dp">
+
+        <ImageView
+            android:id="@+id/category"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:background="@color/Default"
+            android:padding="10dp"
+            app:srcCompat="@drawable/dining" />
+    </com.google.android.material.card.MaterialCardView>
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/transaction_pager"
+        android:layout_width="match_parent"
+        android:layout_height="650dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

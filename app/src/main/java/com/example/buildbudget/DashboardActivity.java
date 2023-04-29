@@ -28,7 +28,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.example.buildbudget.R.id;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -162,7 +161,7 @@ public class DashboardActivity extends AppCompatActivity implements
 
 // TODO:  Other Buttons
 
-        mNotification = findViewById(R.id.notification);
+        mNotification = findViewById(R.id.wrap);
         mNotification.setOnClickListener(view -> {
             Intent start = new Intent(this, NotificationsActivity.class);
             startActivity(start);
