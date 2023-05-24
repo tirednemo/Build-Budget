@@ -47,9 +47,9 @@ public class DashboardActivity extends AppCompatActivity implements
     TextView addText, OCRText, manualText;
     Boolean isAllFABsVisible;
 
-    RecyclerView accountRecyclerView, recordRecyclerView;
-    AccountItemsRecycleViewAdapter accountsRecyclerViewAdapter;
-    AccountItemsRecycleViewAdapter.AccountItemsOnClickHandler accountItemsOnClickHandler;
+    RecyclerView accountCardRecyclerView, recordRecyclerView;
+    AccountCardItemsRecycleViewAdapter accountCardsRecyclerViewAdapter;
+    AccountCardItemsRecycleViewAdapter.AccountCardItemsOnClickHandler accountCardItemsOnClickHandler;
     RecordItemsRecycleViewAdapter recordsRecyclerViewAdapter;
     RecordItemsRecycleViewAdapter.RecordItemsOnClickHandler recordItemsOnClickHandler;
 
@@ -175,10 +175,10 @@ public class DashboardActivity extends AppCompatActivity implements
         List<Records> recordList;
         recordList = getRecords();
 
-        accountRecyclerView = findViewById(R.id.accounts_view);
-        accountsRecyclerViewAdapter = new AccountItemsRecycleViewAdapter(accountList, getApplication(), accountItemsOnClickHandler);
-        accountRecyclerView.setAdapter(accountsRecyclerViewAdapter);
-        accountRecyclerView.setLayoutManager(new LinearLayoutManager(DashboardActivity.this, LinearLayoutManager.HORIZONTAL, false));
+        accountCardRecyclerView = findViewById(R.id.account_cards_view);
+        accountCardsRecyclerViewAdapter = new AccountCardItemsRecycleViewAdapter(accountList, getApplication(), accountCardItemsOnClickHandler);
+        accountCardRecyclerView.setAdapter(accountCardsRecyclerViewAdapter);
+        accountCardRecyclerView.setLayoutManager(new LinearLayoutManager(DashboardActivity.this, LinearLayoutManager.HORIZONTAL, false));
 
         recordRecyclerView = findViewById(R.id.date_view);
         recordsRecyclerViewAdapter = new RecordItemsRecycleViewAdapter(recordList, getApplication(), recordItemsOnClickHandler);
@@ -290,11 +290,11 @@ public class DashboardActivity extends AppCompatActivity implements
 }
 
 
-class AccountViewHolder extends RecyclerView.ViewHolder {
+class AccountCardViewHolder extends RecyclerView.ViewHolder {
     LinearLayout front, back;
     TextView title_front, title_back, balance, holder, provider_front, provider_back, number, expiry;
 
-    AccountViewHolder(View itemView) {
+    AccountCardViewHolder(View itemView) {
         super(itemView);
         front = itemView.findViewById(R.id.card_layout_front);
         title_front = itemView.findViewById(R.id.card_title_front);
@@ -310,16 +310,16 @@ class AccountViewHolder extends RecyclerView.ViewHolder {
     }
 }
 
-class AccountItemsRecycleViewAdapter extends RecyclerView.Adapter<AccountViewHolder> {
-    public interface AccountItemsOnClickHandler {
+class AccountCardItemsRecycleViewAdapter extends RecyclerView.Adapter<AccountCardViewHolder> {
+    public interface AccountCardItemsOnClickHandler {
         void onClick(int index);
     }
 
     List<Account> list;
     Context context;
-    AccountItemsOnClickHandler clickHandler;
+    AccountCardItemsOnClickHandler clickHandler;
 
-    public AccountItemsRecycleViewAdapter(List<Account> list, Context context, AccountItemsOnClickHandler clickHandler) {
+    public AccountCardItemsRecycleViewAdapter(List<Account> list, Context context, AccountCardItemsOnClickHandler clickHandler) {
         this.list = list;
         this.context = context;
         this.clickHandler = clickHandler;
@@ -327,14 +327,14 @@ class AccountItemsRecycleViewAdapter extends RecyclerView.Adapter<AccountViewHol
 
     @NonNull
     @Override
-    public AccountViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public AccountCardViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
-        return new AccountViewHolder(inflater.inflate(R.layout.layout_account_cards, parent, false));
+        return new AccountCardViewHolder(inflater.inflate(R.layout.layout_account_cards, parent, false));
     }
 
     @Override
-    public void onBindViewHolder(@NonNull AccountViewHolder viewHolder, int position) {
+    public void onBindViewHolder(@NonNull AccountCardViewHolder viewHolder, int position) {
         final int index = viewHolder.getAdapterPosition();
 
         Account account = list.get(position);
@@ -403,7 +403,7 @@ class RecordViewHolder extends RecyclerView.ViewHolder {
     RecordViewHolder(View itemView) {
         super(itemView);
 
-        title = itemView.findViewById(R.id.textView2);
+        title = itemView.findViewById(R.id.add_account);
         account = itemView.findViewById(R.id.textView3);
         amount = itemView.findViewById(R.id.textView4);
     }
@@ -449,7 +449,6 @@ class RecordItemsRecycleViewAdapter extends RecyclerView.Adapter<RecordViewHolde
         return list.size();
     }
 }
-
 
 
 

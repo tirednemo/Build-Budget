@@ -236,30 +236,33 @@ public class SignupTabFragment extends Fragment {
 
                     ActionCodeSettings actionCodeSettings =
                             ActionCodeSettings.newBuilder()
-                                    .setUrl("https://buildbudget.page.link/bjYi")
+                                    .setUrl("https://buildbudget.page.link/signup?uid=" + mAuth.getCurrentUser().getUid())
                                     .setHandleCodeInApp(true)
                                     .setIOSBundleId("com.example.buildbudget")
                                     .setAndroidPackageName(
                                             "com.example.buildbudget",
                                             false,
-                                            null)
+                                            "1")
                                     .build();
 
-
-                    FirebaseAuth auth = FirebaseAuth.getInstance();
-                    auth.sendSignInLinkToEmail(mail, actionCodeSettings)
+                    mAuth.sendSignInLinkToEmail(mail, actionCodeSettings)
                             .addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isSuccessful()) {
                                 Log.d(TAG, "Email sent.");
 
-//                                FirebaseUser usr = mAuth.getCurrentUser();
-//                                Intent start = new Intent((Activity) getContext(), VerificationActivity.class);
-//                                start.putExtra("com.example.buildbudget.register", usr.getUid());
-//                                start.putExtra("com.example.buildbudget.name", name);
-//                                start.putExtra("com.example.buildbudget.mail", mail);
-//                                startActivity(start);
+                                FirebaseUser user = mAuth.getCurrentUser();
+                                User usr = new User(name, mail);
+
+                                mDatabase = FirebaseDatabase.getInstance("https://build-budget-71a7f-default-rtdb.asia-southeast1.firebasedatabase.app/").getReference();
+                                mDatabase.child("users").child(user.getUid()).setValue(usr);
+
+                                FirebaseAuth.getInstance().signOut();
+                                Intent start = new Intent(getActivity(), VerificationActivity.class);
+                                start.putExtra("com.example.buildbudget.mail", mail);
+                                startActivity(start);
+                                getActivity().finish();
                             }
                         }
                     });

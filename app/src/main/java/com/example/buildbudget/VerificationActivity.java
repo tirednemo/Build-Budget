@@ -5,10 +5,14 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Handler;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -44,6 +48,7 @@ public class VerificationActivity extends AppCompatActivity {
     TextView timer;
     TextView resend;
     Button confirm;
+    EditText startAmount;
     String uid;
 
     @Override
@@ -55,93 +60,97 @@ public class VerificationActivity extends AppCompatActivity {
         window.setStatusBarColor(ContextCompat.getColor(this, R.color.d_yellow));
         tick = findViewById(R.id.tick);
         timer = findViewById(R.id.resend_timer);
-//        new CountDownTimer(120000, 1000) {
-//            public void onTick(long millisUntilFinished) {
-//                NumberFormat f = new DecimalFormat("00");
-//                long min = (millisUntilFinished / 60000) % 60;
-//                long sec = (millisUntilFinished / 1000) % 60;
-//                timer.setText(f.format(min) + ":" + f.format(sec));
-//            }
-//
-//            public void onFinish() {
-//                timer.setText("00:00");
-//                confirm.setEnabled(true);
-//                confirm.setBackgroundColor(getResources().getColor(R.color.Black));
-//            }
-//        }.start();
-
         sentmail = findViewById(R.id.sentemail);
         tv = findViewById(R.id.tv);
         resend = findViewById(R.id.resend_button);
+        startAmount = findViewById(R.id.startAmount);
         confirm = findViewById(R.id.confirm2);
 
-//        if (getIntent().hasExtra("com.example.buildbudget.register")) {
-//            uid = getIntent().getExtras().getString("com.example.buildbudget.register");
-//            FirebaseUser user = auth.getCurrentUser();
-//            if (user != null) {
+        String email = "";
+        if (getIntent().hasExtra("com.example.buildbudget.mail")) {
+            email = getIntent().getExtras().getString("com.example.buildbudget.mail");
+            sentmail.setText("We sent a code to " + email);
 
-
-//        if (getIntent().hasExtra("com.example.buildbudget.register")) {
-//            sentmail.setText("We sent a code to " + getIntent().getExtras().getString("com.example.buildbudget.mail"));
-            auth = FirebaseAuth.getInstance();
-
-            Intent intent = getIntent();
-            if (intent != null && intent.getData() != null) {
-                sentmail.setVisibility(View.INVISIBLE);
-                tv.setVisibility(View.INVISIBLE);
-                timer.setVisibility(View.INVISIBLE);
-                resend.setVisibility(View.INVISIBLE);
-
-                String emailLink = intent.getData().toString();
-
-
-                if (auth.isSignInWithEmailLink(emailLink)) {
-
-                    String name = intent.getExtras().getString("com.example.buildbudget.name");
-                    String email = intent.getExtras().getString("com.example.buildbudget.mail");
-
-                    // The client SDK will parse the code from the link for you.
-                    auth.signInWithEmailLink(email, emailLink)
-                            .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                                @Override
-                                public void onComplete(@NonNull Task<AuthResult> task) {
-                                    if (task.isSuccessful()) {
-                                        Log.d(TAG, "Successfully signed in with email link!");
-                                        tick.setVisibility(View.VISIBLE);
-                                        sentmail.setTextSize(20);
-                                        sentmail.setText("Verification successful");
-                                        sentmail.setVisibility(View.VISIBLE);
-                                        AuthResult result = task.getResult();
-                                        // You can access the new user via
-                                        // Additional user info profile *not* available via:
-                                        // result.getAdditionalUserInfo().getProfile() == null
-                                        // You can check if the user is new or existing:
-                                        // result.getAdditionalUserInfo().isNewUser()
-                                        confirm.setOnClickListener(view ->
-                                        {
-                                            mDatabase = FirebaseDatabase.getInstance("https://build-budget-71a7f-default-rtdb.asia-southeast1.firebasedatabase.app/").getReference();
-                                            FirebaseUser usr = result.getUser();
-                                            if (usr != null) {
-                                                User user = new User(name, email);
-                                                mDatabase.child("users").child(usr.getUid()).setValue(user);
-                                                Intent start = new Intent(getApplicationContext(), DashboardActivity.class);
-                                                start.putExtra("com.example.buildbudget.user", usr.getUid());
-                                                startActivity(start);
-                                            }
-                                        });
-                                    } else {
-                                        Log.e(TAG, "Error signing in with email link", task.getException());
-                                    }
-                                }
-                            });
+            new CountDownTimer(120000, 1000) {
+                public void onTick(long millisUntilFinished) {
+                    NumberFormat f = new DecimalFormat("00");
+                    long min = (millisUntilFinished / 60000) % 60;
+                    long sec = (millisUntilFinished / 1000) % 60;
+                    timer.setText(f.format(min) + ":" + f.format(sec));
                 }
+
+                public void onFinish() {
+                    timer.setText("00:00");
+                    confirm.setEnabled(true);
+                    confirm.setBackgroundColor(getResources().getColor(R.color.Black));
+                }
+            }.start();
+        } else {
+            auth = FirebaseAuth.getInstance();
+            mDatabase = FirebaseDatabase.getInstance("https://build-budget-71a7f-default-rtdb.asia-southeast1.firebasedatabase.app/").getReference();
+
+            FirebaseUser user = auth.getCurrentUser();
+            if (user.isEmailVerified()) {
+                sentmail.setText("Thank you for verifying!");
+                timer.setVisibility(View.GONE);
+                tv.setVisibility(View.GONE);
+                resend.setVisibility(View.GONE);
+                tick.setVisibility(View.VISIBLE);
+
+                new Handler().postDelayed(() -> {
+                    tick.setVisibility(View.GONE);
+
+                    startAmount.setVisibility(View.VISIBLE);
+                    sentmail.setText("How much money do you have in your wallet right now?");
+
+                    startAmount.addTextChangedListener(new TextWatcher() {
+                        @Override
+                        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                        }
+
+                        @Override
+                        public void onTextChanged(CharSequence s, int start, int before, int count) {
+                            if (!startAmount.getText().toString().isEmpty()) {
+                                confirm.setEnabled(true);
+                                startAmount.setTextColor(getResources().getColor(R.color.Black));
+                                confirm.setBackgroundColor(getResources().getColor(R.color.Black));
+                                confirm.setOnClickListener(view ->
+                                {
+                                    mDatabase.child("users").child(user.getUid()).child("accounts").child("Cash").child("Balance").setValue(startAmount.getText().toString());
+
+                                    Intent startt = new Intent(VerificationActivity.this, DashboardActivity.class);
+                                    startt.putExtra("com.example.buildbudget.user", user.getUid());
+                                    startActivity(startt);
+                                });
+                            }
+                        }
+
+                        @Override
+                        public void afterTextChanged(Editable s) {
+                        }
+                    });
+                }, 2000);
+            } else {
+                mDatabase.child("users").child(user.getUid()).removeValue();
+                user.delete()
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()) {
+                                    Log.d(TAG, "WTH User account deleted.");
+                                }
+                            }
+                        });
+                auth.signOut();
             }
-//        }
+        }
+
     }
-    public void onBackPressed(View v)
-    {
+
+    public void onBackPressed(View v) {
         finish();
     }
+
     @Override
     public void onBackPressed() {
         super.onBackPressed();

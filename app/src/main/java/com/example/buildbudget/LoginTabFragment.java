@@ -19,6 +19,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -100,10 +101,18 @@ public class LoginTabFragment extends Fragment {
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
                     Log.d(TAG, "signInWithEmail:success");
-                    FirebaseUser usr = mAuth.getCurrentUser();
-                    Intent start = new Intent((Activity) getContext(), DashboardActivity.class);
-                    start.putExtra("com.example.buildbudget.user", usr.getUid());
-                    startActivity(start);
+                    FirebaseUser user = mAuth.getCurrentUser();
+                    if (user.isEmailVerified())
+                        Log.d(TAG, "verified");
+                    else
+                        Log.d(TAG, "no");
+                    if (getActivity().getIntent() == null) {
+                        Intent start = new Intent((Activity) getContext(), DashboardActivity.class);
+                        startActivity(start);
+                    } else {
+                        Intent start = new Intent((Activity) getContext(), VerificationActivity.class);
+                        startActivity(start);
+                    }
                 } else {
                     try {
                         Log.w(TAG, "signInWithEmail:failure", task.getException());

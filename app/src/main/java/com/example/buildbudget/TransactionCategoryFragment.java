@@ -1,12 +1,6 @@
 package com.example.buildbudget;
 
-import android.animation.Animator;
-import android.animation.AnimatorInflater;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.AnimatorSet;
 import android.content.Context;
-import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,7 +9,6 @@ import android.view.WindowManager;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.SearchView;
 import android.widget.TextView;
 
@@ -105,7 +98,7 @@ class CategoryViewHolder extends RecyclerView.ViewHolder {
 
     CategoryViewHolder(View itemView) {
         super(itemView);
-        name = itemView.findViewById(R.id.textView2);
+        name = itemView.findViewById(R.id.add_account);
         icon = itemView.findViewById(R.id.imageView);
     }
 }

@@ -44,6 +44,12 @@ public class AuthenticationActivity extends AppCompatActivity {
         adapter = new AuthenticationPagerAdapter(fragmentManager, getLifecycle());
         pager.setAdapter(adapter);
 
+        if (!getIntent().hasExtra("origin")) {
+            tabLayout.getTabAt(1).select();
+            pager.setCurrentItem(1);
+            heading.setText("Login");
+        }
+
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -70,10 +76,11 @@ public class AuthenticationActivity extends AppCompatActivity {
             }
         });
     }
-    public void onBackPressed(View v)
-    {
+
+    public void onBackPressed(View v) {
         finish();
     }
+
     @Override
     public void onBackPressed() {
         super.onBackPressed();
@@ -89,7 +96,7 @@ class AuthenticationPagerAdapter extends FragmentStateAdapter {
     @NonNull
     @Override
     public Fragment createFragment(int position) {
-       if (position == 0)
+        if (position == 0)
             return new SignupTabFragment();
         else
             return new LoginTabFragment();

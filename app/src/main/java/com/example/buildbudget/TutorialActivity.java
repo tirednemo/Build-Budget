@@ -60,6 +60,7 @@ public class TutorialActivity extends AppCompatActivity {
             } else {
                 System.out.println("here");
                 Intent start = new Intent(getApplicationContext(), AuthenticationActivity.class);
+                start.putExtra("origin","Tutorial");
                 startActivity(start);
             }
         }));
