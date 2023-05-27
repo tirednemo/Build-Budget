@@ -10,6 +10,24 @@
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent">
 
+    <Button
+        android:id="@+id/continuee3"
+        android:layout_width="match_parent"
+        android:layout_height="58dp"
+        android:layout_marginStart="25dp"
+        android:layout_marginEnd="25dp"
+        android:backgroundTint="@color/Black"
+        android:enabled="false"
+        android:fontFamily="@font/work_sans_medium"
+        android:text="Confirm"
+        android:textAllCaps="false"
+        android:textColor="@color/White"
+        android:textSize="18sp"
+        app:cornerRadius="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -30,7 +48,7 @@
                 android:layout_marginStart="25dp"
                 android:layout_marginTop="16dp"
                 android:fontFamily="@font/work_sans_semibold"
-                android:labelFor="@id/email"
+                android:labelFor="@id/bank_name"
                 android:text="Bank name"
                 android:textColor="@color/Black"
                 android:textSize="16sp"
@@ -40,7 +58,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <Spinner
-                android:id="@+id/email"
+                android:id="@+id/bank_name"
                 android:layout_width="0dp"
                 android:layout_height="48dp"
                 android:layout_marginStart="25dp"

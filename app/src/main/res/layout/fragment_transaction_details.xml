@@ -63,7 +63,7 @@
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="15dp"
                 android:fontFamily="@font/work_sans_semibold"
-                android:labelFor="@id/email"
+                android:labelFor="@id/bank_name"
                 android:text="Date"
                 android:textColor="@color/Black"
                 android:textSize="16sp"
@@ -73,7 +73,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <EditText
-                android:id="@+id/email"
+                android:id="@+id/bank_name"
                 android:layout_width="0dp"
                 android:layout_height="48dp"
                 android:layout_marginStart="20dp"
@@ -111,7 +111,7 @@
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="15dp"
                 android:fontFamily="@font/work_sans_semibold"
-                android:labelFor="@id/email"
+                android:labelFor="@id/bank_name"
                 android:text="Payee"
                 android:textColor="@color/Black"
                 android:textSize="16sp"
@@ -121,7 +121,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <EditText
-                android:id="@+id/email"
+                android:id="@+id/bank_name"
                 android:layout_width="0dp"
                 android:layout_height="48dp"
                 android:layout_marginStart="20dp"
@@ -160,7 +160,7 @@
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="15dp"
                 android:fontFamily="@font/work_sans_semibold"
-                android:labelFor="@id/email"
+                android:labelFor="@id/bank_name"
                 android:text="Note"
                 android:textColor="@color/Black"
                 android:textSize="16sp"
@@ -170,7 +170,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <EditText
-                android:id="@+id/email"
+                android:id="@+id/bank_name"
                 android:layout_width="0dp"
                 android:layout_height="48dp"
                 android:layout_marginStart="20dp"
@@ -209,7 +209,7 @@
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="15dp"
                 android:fontFamily="@font/work_sans_semibold"
-                android:labelFor="@id/email"
+                android:labelFor="@id/bank_name"
                 android:text="Status"
                 android:textColor="@color/Black"
                 android:textSize="16sp"
@@ -219,7 +219,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <Spinner
-                android:id="@+id/email"
+                android:id="@+id/bank_name"
                 android:layout_width="0dp"
                 android:layout_height="48dp"
                 android:layout_marginStart="20dp"
@@ -253,7 +253,7 @@
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="15dp"
                 android:fontFamily="@font/work_sans_semibold"
-                android:labelFor="@id/email"
+                android:labelFor="@id/bank_name"
                 android:text="Attachments"
                 android:textColor="@color/Black"
                 android:textSize="16sp"
@@ -263,7 +263,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <EditText
-                android:id="@+id/email"
+                android:id="@+id/bank_name"
                 android:layout_width="0dp"
                 android:layout_height="48dp"
                 android:layout_marginStart="20dp"

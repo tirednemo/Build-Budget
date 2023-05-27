@@ -1,7 +1,9 @@
 package com.example.buildbudget;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +20,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,13 +50,8 @@ public class AccountsActivity extends AppCompatActivity {
         window.setStatusBarColor(ContextCompat.getColor(this, R.color.d_violet));
 
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
-        List<Account> accountList;
-        accountList = getAccounts();
+        getAccounts();
 
-        accountRecyclerView = findViewById(R.id.accounts_view);
-        accountsRecyclerViewAdapter = new AccountItemsRecycleViewAdapter(accountList, this, accountItemsOnClickHandler);
-        accountRecyclerView.setAdapter(accountsRecyclerViewAdapter);
-        accountRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
 
         searchBar = findViewById(R.id.searchView2);
         searchBar.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -64,20 +71,54 @@ public class AccountsActivity extends AppCompatActivity {
                 return true;
             }
         });
+
+        TextView add_account = findViewById(R.id.add_account);
+        add_account.setOnClickListener(view ->
+        {
+            Intent startt = new Intent(AccountsActivity.this, AccountCreationActivity.class);
+            startActivity(startt);
+        });
     }
 
-    private List<Account> getAccounts() {
-        List<Account> list = new ArrayList<>();
-        list.add(new Account("Debit Card", "card1", 0.0));
-        list.add(new Account("Cash", "Cash", 0.0));
-        return list;
-    }
-    
-    
-    public void onBackPressed(View v)
+    @Override
+    public void onRestart()
     {
+        super.onRestart();
+        finish();
+        startActivity(getIntent());
+    }
+
+    private void getAccounts() {
+        List<Account> list = new ArrayList<>();
+
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        DatabaseReference mDatabase = FirebaseDatabase.getInstance("https://build-budget-71a7f-default-rtdb.asia-southeast1.firebasedatabase.app/").getReference();
+
+        mDatabase.child("users").child(user.getUid()).child("accounts")
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        for (DataSnapshot accountSnapshot : dataSnapshot.getChildren()) {
+                            Account account = accountSnapshot.getValue(Account.class);
+                            list.add(account);
+                        }
+                        accountRecyclerView = findViewById(R.id.accounts_view);
+                        accountsRecyclerViewAdapter = new AccountItemsRecycleViewAdapter(list, AccountsActivity.this, accountItemsOnClickHandler);
+                        accountRecyclerView.setAdapter(accountsRecyclerViewAdapter);
+                        accountRecyclerView.setLayoutManager(new LinearLayoutManager(AccountsActivity.this, LinearLayoutManager.VERTICAL, false));
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                    }
+                });
+    }
+
+
+    public void onBackPressed(View v) {
         finish();
     }
+
     @Override
     public void onBackPressed() {
         super.onBackPressed();
@@ -128,9 +169,9 @@ class AccountItemsRecycleViewAdapter extends RecyclerView.Adapter<AccountViewHol
         final int index = viewHolder.getAdapterPosition();
 
         Account account = list.get(position);
-        viewHolder.name.setText(account.title);
-        viewHolder.type.setText(account.type);
-        switch (account.type){
+        viewHolder.name.setText(account.Title);
+        viewHolder.type.setText(account.Type);
+        switch (account.Type) {
             case "Cash":
                 viewHolder.icon.setImageResource(R.drawable.wallet);
                 break;
@@ -141,13 +182,15 @@ class AccountItemsRecycleViewAdapter extends RecyclerView.Adapter<AccountViewHol
             case "Debit Card":
                 viewHolder.icon.setImageResource(R.drawable.bank_cards);
                 break;
-            case "Savings Account":
-            case "Current Account":
+            case "Savings":
+            case "Current":
                 viewHolder.icon.setImageResource(R.drawable.bank);
                 break;
         }
 
-        viewHolder.itemView.setOnClickListener(v -> clickHandler.onClick(index));
+        viewHolder.itemView.setOnClickListener(v -> {
+            clickHandler.onClick(index);
+        });
     }
 
     @Override
@@ -170,7 +213,7 @@ class AccountItemsRecycleViewAdapter extends RecyclerView.Adapter<AccountViewHol
             } else {
                 String query = constraint.toString().trim().toLowerCase(Locale.ROOT);
                 for (Account account : initialList) {
-                    if (account.title.toLowerCase(Locale.ROOT).contains(query)) {
+                    if (account.Title.toLowerCase(Locale.ROOT).contains(query)) {
                         filteredList.add(account);
                     }
                 }

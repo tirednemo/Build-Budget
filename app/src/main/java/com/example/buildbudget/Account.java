@@ -1,32 +1,29 @@
 package com.example.buildbudget;
 
 public class Account {
-    String type;
-    String title;
-    Double balance;
+    public String Type;
+    public  String Number;
+    public String Title;
+    public  String Currency;
+    public  Double Balance;
 
-    String number;
-    String holder;
-    String provider;
+    public String Holder;
+    public String Validity;
+    public  String CVV;
 
-    String year;
-    String cvv;
 
-    Account(String type, String title, Double balance) {
-        this.type = type;
-        this.title = title;
-        this.balance = balance;
+    public Account() {
     }
-
-    public void setInfo() {
-        if (type == "cash") {
-
-        } else if (type == "bank") {
-
-        } else if (type == "card") {
-
-        } else if (type == "mobile") {
-
-        }
+    public Account(String type, String title, Double balance) {
+        this.Type = type;
+        this.Title = title;
+        this.Balance = balance;
+    }
+    public Account(String type, String title, String number, String currency, Double balance) {
+        this.Type = type;
+        this.Title = title;
+        this.Number = number;
+        this.Currency = currency;
+        this.Balance = balance;
     }
 }

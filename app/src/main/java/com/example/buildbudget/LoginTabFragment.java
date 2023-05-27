@@ -2,10 +2,8 @@ package com.example.buildbudget;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.text.Editable;
@@ -18,15 +16,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
-import com.google.firebase.auth.FirebaseAuthUserCollisionException;
-import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.util.Objects;
@@ -55,7 +47,7 @@ public class LoginTabFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_login_tab, container, false);
 
 
-        email = v.findViewById(R.id.email);
+        email = v.findViewById(R.id.bank_name);
         password = v.findViewById(R.id.password);
         email_status = v.findViewById(R.id.email_invalid);
         password_status = v.findViewById(R.id.password_invalid);

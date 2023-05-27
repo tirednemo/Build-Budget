@@ -14,13 +14,13 @@
         android:layout_marginTop="50dp"
         android:layout_marginEnd="25dp"
         android:fontFamily="@font/work_sans_semibold"
-        android:labelFor="@id/email"
+        android:labelFor="@id/bank_name"
         android:text="Email"
         android:textColor="@color/Black"
         android:textSize="16sp" />
 
     <EditText
-        android:id="@+id/email"
+        android:id="@+id/bank_name"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:layout_marginStart="25dp"

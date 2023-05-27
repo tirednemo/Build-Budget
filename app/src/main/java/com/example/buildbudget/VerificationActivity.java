@@ -119,7 +119,8 @@ public class VerificationActivity extends AppCompatActivity {
                                         confirm.setBackgroundColor(getResources().getColor(R.color.Black));
                                         confirm.setOnClickListener(view ->
                                         {
-                                            mDatabase.child("users").child(user.getUid()).child("accounts").child("Cash").child("Balance").setValue(startAmount.getText().toString());
+                                            Account account = new Account("Cash", "Cash",Double.valueOf(startAmount.getText().toString()));
+                                            mDatabase.child("users").child(user.getUid()).child("accounts").child("Cash").setValue(account);
 
                                             Intent startt = new Intent(VerificationActivity.this, DashboardActivity.class);
                                             startt.putExtra("com.example.buildbudget.user", user.getUid());
