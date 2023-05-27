@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,6 +14,7 @@ public class DebtActivity extends AppCompatActivity {
     private EditText input1;
     private EditText input2;
     private TextView totaldebt;
+    private ImageButton Backbuttond;
 
 
 
@@ -23,6 +25,13 @@ public class DebtActivity extends AppCompatActivity {
         input1=(EditText) findViewById(R.id.input1);
         input2=(EditText) findViewById(R.id.input2);
         totaldebt=(TextView) findViewById(R.id.totaldebt);
+        Backbuttond= (ImageButton) findViewById(R.id.Backbuttond);
+        Backbuttond.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
 
 
     }

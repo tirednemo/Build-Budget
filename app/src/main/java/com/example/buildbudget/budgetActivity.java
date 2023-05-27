@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,6 +16,7 @@ public class budgetActivity extends AppCompatActivity {
     private EditText input1;
     private TextView budg;
     private TextView exp;
+    private ImageButton Backbuttonb;
     private String res;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,6 +27,13 @@ public class budgetActivity extends AppCompatActivity {
         exp=(TextView) findViewById(R.id.expenseVal);
       /*  Intent intent = getIntent();
         res=intent.getStringExtra("Expense");*/
+        Backbuttonb= (ImageButton) findViewById(R.id.Backbuttonb);
+        Backbuttonb.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
 
 
 
@@ -42,6 +51,7 @@ public class budgetActivity extends AppCompatActivity {
         double n1=getInput(input1);
         budg.setText(String.valueOf(n1));
         exp.setText(res);
+        input1.getText().clear();
     }
     /*for expense value:
     add the following lines in transaction
