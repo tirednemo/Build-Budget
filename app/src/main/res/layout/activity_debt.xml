@@ -12,7 +12,7 @@
         android:layout_height="568dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0"
@@ -56,8 +56,10 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/imageView10"
         app:layout_constraintEnd_toEndOf="@+id/imageView10"
+        app:layout_constraintHorizontal_bias="0.494"
         app:layout_constraintStart_toStartOf="@+id/imageView10"
-        app:layout_constraintTop_toTopOf="@+id/imageView10" />
+        app:layout_constraintTop_toTopOf="@+id/imageView10"
+        app:layout_constraintVertical_bias="0.395" />
 
     <EditText
         android:id="@+id/input1"
@@ -86,18 +88,18 @@
         app:layout_constraintHorizontal_bias="0.492"
         app:layout_constraintStart_toStartOf="@+id/imageView10"
         app:layout_constraintTop_toBottomOf="@+id/input1"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.309" />
 
     <EditText
         android:id="@+id/input2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:inputType="number"
         android:hint="0.00"
+        android:inputType="number"
         app:layout_constraintBottom_toBottomOf="@+id/imageView10"
         app:layout_constraintEnd_toEndOf="@+id/imageView10"
-        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintHorizontal_bias="0.49"
         app:layout_constraintStart_toStartOf="@+id/imageView10"
         app:layout_constraintTop_toBottomOf="@+id/textView19"
         app:layout_constraintVertical_bias="0.0" />
@@ -111,7 +113,7 @@
         app:layout_constraintEnd_toEndOf="@+id/imageView10"
         app:layout_constraintHorizontal_bias="0.939"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextNumber4"
+        app:layout_constraintTop_toBottomOf="@+id/button7"
         app:layout_constraintVertical_bias="0.225"
         app:srcCompat="@drawable/img" />
 
@@ -136,10 +138,10 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/imageView13"
         app:layout_constraintEnd_toEndOf="@+id/imageView13"
-        app:layout_constraintHorizontal_bias="0.201"
+        app:layout_constraintHorizontal_bias="0.202"
         app:layout_constraintStart_toStartOf="@+id/imageView13"
         app:layout_constraintTop_toTopOf="@+id/imageView13"
-        app:layout_constraintVertical_bias="0.22" />
+        app:layout_constraintVertical_bias="0.13" />
 
     <TextView
         android:id="@+id/totaldebt"
@@ -149,12 +151,13 @@
         android:textColor="@color/Black"
         android:textSize="35dp"
         android:textStyle="bold"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="@+id/imageView13"
         app:layout_constraintEnd_toEndOf="@+id/imageView13"
         app:layout_constraintHorizontal_bias="0.069"
         app:layout_constraintStart_toStartOf="@+id/imageView13"
         app:layout_constraintTop_toBottomOf="@+id/textView20"
-        app:layout_constraintVertical_bias="0.186" />
+        app:layout_constraintVertical_bias="0.0" />
 
     <ImageView
         android:id="@+id/imageView16"
@@ -173,13 +176,30 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:backgroundTint="@color/Orange"
-        android:text="CONFIRM"
         android:onClick="remainingDebt"
+        android:text="CONFIRM"
         app:layout_constraintBottom_toBottomOf="@+id/imageView10"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="@+id/imageView10"
         app:layout_constraintTop_toBottomOf="@+id/input2"
-        app:layout_constraintVertical_bias="0.152" />
+        app:layout_constraintVertical_bias="0.157" />
+
+    <Button
+        android:id="@+id/button8"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="?android:selectableItemBackground"
+        android:backgroundTint="#51FFFFFF"
+        android:text="RESET"
+        android:onClick="reset"
+        android:textColor="@color/d_blue"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView13"
+        app:layout_constraintEnd_toEndOf="@+id/imageView13"
+        app:layout_constraintHorizontal_bias="0.03"
+        app:layout_constraintStart_toStartOf="@+id/imageView13"
+        app:layout_constraintTop_toBottomOf="@+id/totaldebt"
+        app:layout_constraintVertical_bias="0.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

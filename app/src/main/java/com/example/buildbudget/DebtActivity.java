@@ -35,9 +35,11 @@ public class DebtActivity extends AppCompatActivity {
     public void remainingDebt(View view){
         double n1=getInput(input1);
         double n2=getInput(input2);
+        String value = totaldebt.getText().toString();
+        Double val =Double.valueOf(value);
         if(n1>=n2)
         {
-            double diff=n1-n2;
+            double diff=val+n1-n2;
             totaldebt.setText(String.valueOf(diff));
 
         }
@@ -45,9 +47,18 @@ public class DebtActivity extends AppCompatActivity {
         {
             totaldebt.setText(String.valueOf(0.00));
         }
+        input1.getText().clear();
+        input2.getText().clear();
 
 
     }
+    public void reset(View view) {
+        input1.getText().clear();
+        input2.getText().clear();
+        totaldebt.setText(String.valueOf(0.00));
+    }
+
+
 
 
 }
