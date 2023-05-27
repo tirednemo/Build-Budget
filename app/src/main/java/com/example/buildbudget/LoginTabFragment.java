@@ -54,6 +54,7 @@ public class LoginTabFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_login_tab, container, false);
 
+
         email = v.findViewById(R.id.email);
         password = v.findViewById(R.id.password);
         email_status = v.findViewById(R.id.email_invalid);
@@ -96,40 +97,33 @@ public class LoginTabFragment extends Fragment {
 //    }
     private void Login(String mail, final String pass) {
         mAuth = FirebaseAuth.getInstance();
-        mAuth.signInWithEmailAndPassword(mail, pass).addOnCompleteListener((Activity) getContext(), new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if (task.isSuccessful()) {
-                    Log.d(TAG, "signInWithEmail:success");
-                    FirebaseUser user = mAuth.getCurrentUser();
-                    if (user.isEmailVerified())
-                        Log.d(TAG, "verified");
-                    else
-                        Log.d(TAG, "no");
-                    if (getActivity().getIntent() == null) {
-                        Intent start = new Intent((Activity) getContext(), DashboardActivity.class);
-                        startActivity(start);
-                    } else {
-                        Intent start = new Intent((Activity) getContext(), VerificationActivity.class);
-                        startActivity(start);
-                    }
-                } else {
-                    try {
-                        Log.w(TAG, "signInWithEmail:failure", task.getException());
-                        throw Objects.requireNonNull(task.getException());
-                    } catch (FirebaseAuthInvalidUserException e) {
-                        password_status.setVisibility(View.GONE);
-                        email_status.setVisibility(View.VISIBLE);
-                        email.setBackgroundColor(getResources().getColor(R.color.Input_Invalid));
-                        email_status.setText("Email doesn't exist");
-                    } catch (FirebaseAuthInvalidCredentialsException e) {
-                        email_status.setVisibility(View.GONE);
-                        password_status.setVisibility(View.VISIBLE);
-                        password.setBackgroundColor(getResources().getColor(R.color.Input_Invalid));
-                        password_status.setText("Wrong credentials");
-                    } catch (Exception e) {
-                        Log.e(TAG, e.getMessage());
-                    }
+        mAuth.signInWithEmailAndPassword(mail, pass).addOnCompleteListener((Activity) getContext(), task -> {
+            if (task.isSuccessful()) {
+                Log.d(TAG, "signInWithEmail:success");
+                AuthenticationActivity xxx = (AuthenticationActivity) getActivity();
+                FirebaseUser user = mAuth.getCurrentUser();
+                Intent start;
+                if (xxx.first_time)
+                    start = new Intent((Activity) getContext(), VerificationActivity.class);
+                else
+                    start = new Intent((Activity) getContext(), DashboardActivity.class);
+                startActivity(start);
+            } else {
+                try {
+                    Log.w(TAG, "signInWithEmail:failure", task.getException());
+                    throw Objects.requireNonNull(task.getException());
+                } catch (FirebaseAuthInvalidUserException e) {
+                    password_status.setVisibility(View.GONE);
+                    email_status.setVisibility(View.VISIBLE);
+                    email.setBackgroundColor(getResources().getColor(R.color.Input_Invalid));
+                    email_status.setText("Email doesn't exist");
+                } catch (FirebaseAuthInvalidCredentialsException e) {
+                    email_status.setVisibility(View.GONE);
+                    password_status.setVisibility(View.VISIBLE);
+                    password.setBackgroundColor(getResources().getColor(R.color.Input_Invalid));
+                    password_status.setText("Wrong credentials");
+                } catch (Exception e) {
+                    Log.e(TAG, e.getMessage());
                 }
             }
         });

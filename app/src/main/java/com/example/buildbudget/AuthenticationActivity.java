@@ -1,6 +1,9 @@
 package com.example.buildbudget;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.TextView;
@@ -15,11 +18,15 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.tabs.TabLayout;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
 
 public class AuthenticationActivity extends AppCompatActivity {
     ViewPager2 pager;
     TabLayout tabLayout;
     AuthenticationPagerAdapter adapter;
+    public boolean first_time = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +57,38 @@ public class AuthenticationActivity extends AppCompatActivity {
             heading.setText("Login");
         }
 
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        FirebaseDynamicLinks.getInstance().getDynamicLink(getIntent())
+                .addOnSuccessListener(this, pendingDynamicLinkData -> {
+                    if (pendingDynamicLinkData != null) {
+                        Uri deepLink = pendingDynamicLinkData.getLink();
+                        if (deepLink != null) {
+                            String mode = deepLink.getQueryParameter("mode");
+                            String oobCode = deepLink.getQueryParameter("oobCode");
+
+                            if ("verifyEmail".equals(mode)) {
+                                try {
+                                    mAuth.applyActionCode(oobCode).addOnCompleteListener(task -> {
+                                        if (task.isSuccessful()) {
+                                            first_time = true;
+                                            tabLayout.getTabAt(1).select();
+                                            pager.setCurrentItem(1);
+                                            heading.setText("Login");
+                                        } else {
+                                            // Failed to apply the action code
+                                        }
+                                    });
+                                } catch (Exception e) {
+                                    // Handle any exceptions while applying the action code
+                                }
+                            }
+                        }
+                    }
+                })
+                .addOnFailureListener(this, e -> {
+                    // Handle any error while retrieving the dynamic link
+                });
+
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -75,6 +114,10 @@ public class AuthenticationActivity extends AppCompatActivity {
                 tabLayout.selectTab(tabLayout.getTabAt(position));
             }
         });
+        // ATTENTION: This was auto-generated to handle app links.
+        Intent appLinkIntent = getIntent();
+        String appLinkAction = appLinkIntent.getAction();
+        Uri appLinkData = appLinkIntent.getData();
     }
 
     public void onBackPressed(View v) {

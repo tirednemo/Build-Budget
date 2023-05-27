@@ -23,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
         FirebaseUser currentUser = mAuth.getCurrentUser();
         new Handler().postDelayed(() -> {
             Intent start;
-            if (currentUser != null) {
+            if (currentUser != null && currentUser.isEmailVerified()) {
                 start = new Intent(this, DashboardActivity.class);
                 start.putExtra("com.example.buildbudget.user", currentUser.getUid());
             } else {

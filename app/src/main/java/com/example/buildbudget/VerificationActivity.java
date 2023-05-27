@@ -89,48 +89,51 @@ public class VerificationActivity extends AppCompatActivity {
             auth = FirebaseAuth.getInstance();
             mDatabase = FirebaseDatabase.getInstance("https://build-budget-71a7f-default-rtdb.asia-southeast1.firebasedatabase.app/").getReference();
 
-            FirebaseUser user = auth.getCurrentUser();
-            if (user.isEmailVerified()) {
-                sentmail.setText("Thank you for verifying!");
-                timer.setVisibility(View.GONE);
-                tv.setVisibility(View.GONE);
-                resend.setVisibility(View.GONE);
-                tick.setVisibility(View.VISIBLE);
+            auth.getCurrentUser().reload().addOnSuccessListener(new OnSuccessListener() {
+                @Override
+                public void onSuccess(Object o) {
+                    FirebaseUser user = auth.getCurrentUser();
+                    if (user.isEmailVerified()) {
+                        sentmail.setText("Thank you for verifying!");
+                        timer.setVisibility(View.GONE);
+                        tv.setVisibility(View.GONE);
+                        resend.setVisibility(View.GONE);
+                        tick.setVisibility(View.VISIBLE);
 
-                new Handler().postDelayed(() -> {
-                    tick.setVisibility(View.GONE);
+                        new Handler().postDelayed(() -> {
+                            tick.setVisibility(View.GONE);
 
-                    startAmount.setVisibility(View.VISIBLE);
-                    sentmail.setText("How much money do you have in your wallet right now?");
+                            startAmount.setVisibility(View.VISIBLE);
+                            sentmail.setText("How much money do you have in your wallet right now?");
 
-                    startAmount.addTextChangedListener(new TextWatcher() {
-                        @Override
-                        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                        }
+                            startAmount.addTextChangedListener(new TextWatcher() {
+                                @Override
+                                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                                }
 
-                        @Override
-                        public void onTextChanged(CharSequence s, int start, int before, int count) {
-                            if (!startAmount.getText().toString().isEmpty()) {
-                                confirm.setEnabled(true);
-                                startAmount.setTextColor(getResources().getColor(R.color.Black));
-                                confirm.setBackgroundColor(getResources().getColor(R.color.Black));
-                                confirm.setOnClickListener(view ->
-                                {
-                                    mDatabase.child("users").child(user.getUid()).child("accounts").child("Cash").child("Balance").setValue(startAmount.getText().toString());
+                                @Override
+                                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                                    if (!startAmount.getText().toString().isEmpty()) {
+                                        confirm.setEnabled(true);
+                                        startAmount.setTextColor(getResources().getColor(R.color.Black));
+                                        confirm.setBackgroundColor(getResources().getColor(R.color.Black));
+                                        confirm.setOnClickListener(view ->
+                                        {
+                                            mDatabase.child("users").child(user.getUid()).child("accounts").child("Cash").child("Balance").setValue(startAmount.getText().toString());
 
-                                    Intent startt = new Intent(VerificationActivity.this, DashboardActivity.class);
-                                    startt.putExtra("com.example.buildbudget.user", user.getUid());
-                                    startActivity(startt);
-                                });
-                            }
-                        }
+                                            Intent startt = new Intent(VerificationActivity.this, DashboardActivity.class);
+                                            startt.putExtra("com.example.buildbudget.user", user.getUid());
+                                            startActivity(startt);
+                                        });
+                                    }
+                                }
 
-                        @Override
-                        public void afterTextChanged(Editable s) {
-                        }
-                    });
-                }, 2000);
-            } else {
+                                @Override
+                                public void afterTextChanged(Editable s) {
+                                }
+                            });
+                        }, 2000);
+                    } else {
                 mDatabase.child("users").child(user.getUid()).removeValue();
                 user.delete()
                         .addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -142,7 +145,10 @@ public class VerificationActivity extends AppCompatActivity {
                             }
                         });
                 auth.signOut();
-            }
+                    }
+                }
+            });
+
         }
 
     }

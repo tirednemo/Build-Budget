@@ -233,37 +233,48 @@ public class SignupTabFragment extends Fragment {
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
                     Log.d(TAG, "createUserWithEmail:success");
+                    FirebaseUser user = mAuth.getCurrentUser();
 
-                    ActionCodeSettings actionCodeSettings =
-                            ActionCodeSettings.newBuilder()
-                                    .setUrl("https://buildbudget.page.link/signup?uid=" + mAuth.getCurrentUser().getUid())
-                                    .setHandleCodeInApp(true)
-                                    .setIOSBundleId("com.example.buildbudget")
-                                    .setAndroidPackageName(
-                                            "com.example.buildbudget",
-                                            false,
-                                            "1")
-                                    .build();
+                    UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                            .setDisplayName(name)
+                            .setPhotoUri(Uri.parse("https://i.scdn.co/image/ab6761610000e5eb666a1746919918e63fafb413"))
+                            .build();
 
-                    mAuth.sendSignInLinkToEmail(mail, actionCodeSettings)
+                    user.updateProfile(profileUpdates)
                             .addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if (task.isSuccessful()) {
-                                Log.d(TAG, "Email sent.");
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful()) {
+                                        Log.d(TAG, "User profile updated.");
+                                    }
+                                }
+                            });
 
-                                FirebaseUser user = mAuth.getCurrentUser();
-                                User usr = new User(name, mail);
+                    ActionCodeSettings actionCodeSettings = ActionCodeSettings.newBuilder()
+                            .setUrl("https://buildbudget.page.link/bjYi")
+                            .setHandleCodeInApp(true)
+                            .setAndroidPackageName(
+                                    "com.example.buildbudget",
+                                    true,
+                                    "1")
+                            .setIOSBundleId("com.example.buildbudget")
+                            .build();
 
-                                mDatabase = FirebaseDatabase.getInstance("https://build-budget-71a7f-default-rtdb.asia-southeast1.firebasedatabase.app/").getReference();
-                                mDatabase.child("users").child(user.getUid()).setValue(usr);
+                    user.sendEmailVerification(actionCodeSettings)
+                            .addOnCompleteListener(task1 -> {
+                                if (task1.isSuccessful()) {
+                                    Log.d(TAG, "Email sent.");
 
-                                FirebaseAuth.getInstance().signOut();
-                                Intent start = new Intent(getActivity(), VerificationActivity.class);
-                                start.putExtra("com.example.buildbudget.mail", mail);
-                                startActivity(start);
-                                getActivity().finish();
-                            }
+                            User usr = new User(name, mail);
+
+                            mDatabase = FirebaseDatabase.getInstance("https://build-budget-71a7f-default-rtdb.asia-southeast1.firebasedatabase.app/").getReference();
+                            mDatabase.child("users").child(user.getUid()).setValue(usr);
+
+                            FirebaseAuth.getInstance().signOut();
+                            Intent start = new Intent(getActivity(), VerificationActivity.class);
+                            start.putExtra("com.example.buildbudget.mail", mail);
+                            startActivity(start);
+                            getActivity().finish();
                         }
                     });
                 } else {
