@@ -216,15 +216,13 @@ public class TransactionDetailsFragment extends Fragment {
 
             mStorage
                     .child("images/" + TxID).putFile(filePath)
-                    .addOnSuccessListener(
-                            taskSnapshot -> progressDialog.dismiss())
+                    .addOnSuccessListener(taskSnapshot -> progressDialog.dismiss())
 
                     .addOnFailureListener(e -> progressDialog.dismiss())
-                    .addOnProgressListener(
-                            taskSnapshot -> {
-                                double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount());
-                                progressDialog.setMessage("Uploaded " + (int) progress + "%");
-                            });
+                    .addOnProgressListener(taskSnapshot -> {
+                        double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount());
+                        progressDialog.setMessage("Uploaded " + (int) progress + "%");
+                    });
         }
     }
 
