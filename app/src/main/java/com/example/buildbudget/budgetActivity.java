@@ -56,9 +56,7 @@ public class budgetActivity extends AppCompatActivity {
     /*for expense value:
     add the following lines in transaction
      submitButton = findViewById(R.id.button7);
-        Double in1=getInput(input1);
-        Double in2=getInput(input2);
-        Double res=remainingDebt();
+
         String diff=String.valueOf(res);
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
