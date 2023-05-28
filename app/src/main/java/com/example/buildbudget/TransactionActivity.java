@@ -3,7 +3,7 @@ package com.example.buildbudget;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
-import android.widget.ImageButton;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -18,9 +18,10 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
 public class TransactionActivity extends AppCompatActivity {
-    ViewPager2 pager;
-    TransactionPagerAdapter adapter;
-    ImageView category;
+    FrameLayout frame;
+    TextView heading;
+    ImageView categoryIcon;
+    String categoryName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,26 +31,24 @@ public class TransactionActivity extends AppCompatActivity {
         Window window = getWindow();
         window.setStatusBarColor(ContextCompat.getColor(this, R.color.d_teal));
 
-        category = findViewById(R.id.category);
-        pager = findViewById(R.id.transaction_pager);
-        TextView heading = findViewById(R.id.transaction_heading);
-        if (pager.getCurrentItem() == 0)
-            heading.setText("Summary");
-        else if (pager.getCurrentItem() == 1)
-            heading.setText("Categories");
-        else
-            heading.setText("Details");
+        categoryIcon = findViewById(R.id.category);
+        categoryName = "Food & Drinks";
+        categoryIcon.setImageResource(R.drawable.dining);
+        frame = findViewById(R.id.transaction_frame);
+        heading = findViewById(R.id.transaction_heading);
 
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        adapter = new TransactionPagerAdapter(fragmentManager, getLifecycle());
-        pager.setAdapter(adapter);
+        FragmentTransaction transaction1 = getSupportFragmentManager().beginTransaction();
+        transaction1.add(R.id.transaction_frame, new TransactionAmountFragment());
+        transaction1.commit();
 
-        category.setOnClickListener(view -> TransactionActivity.this.runOnUiThread(() -> {
-            if (pager.getCurrentItem() == 0)
-                pager.setCurrentItem(1);
-            else if (pager.getCurrentItem() == 1)
-                pager.setCurrentItem(0);
-        }));
+        categoryIcon.setOnClickListener(view ->
+        {
+            FragmentTransaction transaction2 = getSupportFragmentManager().beginTransaction();
+            TransactionCategoryFragment newFragment = new TransactionCategoryFragment();
+            transaction2.replace(R.id.transaction_frame, newFragment);
+            transaction2.addToBackStack(null);
+            transaction2.commit();
+        });
     }
 
     public void onBackPressed(View v) {
@@ -63,24 +62,3 @@ public class TransactionActivity extends AppCompatActivity {
     }
 }
 
-class TransactionPagerAdapter extends FragmentStateAdapter {
-    public TransactionPagerAdapter(@NonNull FragmentManager fragmentManager, @NonNull Lifecycle lifecycle) {
-        super(fragmentManager, lifecycle);
-    }
-
-    @NonNull
-    @Override
-    public Fragment createFragment(int position) {
-        if (position == 0)
-            return new TransactionAmountFragment();
-        else if (position == 1)
-            return new TransactionCategoryFragment();
-        else
-            return new TransactionDetailsFragment();
-    }
-
-    @Override
-    public int getItemCount() {
-        return 3;
-    }
-}

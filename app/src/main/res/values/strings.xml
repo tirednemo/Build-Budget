@@ -32,4 +32,10 @@
         <item>BDT</item>
         <item>USD</item>
     </string-array>
+
+    <string-array name="Status">
+        <item>Cleared</item>
+        <item>Due</item>
+        <item>Planned</item>
+    </string-array>
 </resources>

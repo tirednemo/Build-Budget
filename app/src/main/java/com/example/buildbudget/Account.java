@@ -7,7 +7,9 @@ public class Account {
     public  String Currency;
     public  Double Balance;
 
-    public String Holder;
+
+    public String Holder; //account/cardholder name
+    public String Provider; //visa/mastercard
     public String Validity;
     public  String CVV;
 

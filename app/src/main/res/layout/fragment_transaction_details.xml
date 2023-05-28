@@ -18,7 +18,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="110dp">
+            android:layout_marginTop="70dp">
 
             <ImageView
                 android:id="@+id/imageView2"
@@ -30,32 +30,6 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/planner" />
 
-            <FrameLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="100dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <DatePicker
-                    android:id="@+id/date_picker"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="4"
-                    android:calendarViewShown="true"
-                    android:spinnersShown="false"
-                    android:visibility="gone" />
-
-                <TimePicker
-                    android:id="@+id/time_picker"
-                    android:layout_width="360dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="4"
-                    android:visibility="gone" />
-
-            </FrameLayout>
-
             <TextView
                 android:id="@+id/textView8"
                 android:layout_width="wrap_content"
@@ -63,31 +37,60 @@
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="15dp"
                 android:fontFamily="@font/work_sans_semibold"
-                android:labelFor="@id/bank_name"
+                android:labelFor="@id/date"
                 android:text="Date"
                 android:textColor="@color/Black"
                 android:textSize="16sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toEndOf="@+id/imageView2"
                 app:layout_constraintTop_toTopOf="parent" />
 
+            <TextView
+                android:id="@+id/textView17"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="120dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginEnd="133dp"
+                android:fontFamily="@font/work_sans_semibold"
+                android:labelFor="@id/date"
+                android:text="Time"
+                android:textColor="@color/Black"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/textView8"
+                app:layout_constraintTop_toTopOf="parent" />
+
             <EditText
-                android:id="@+id/bank_name"
-                android:layout_width="0dp"
+                android:id="@+id/date"
+                android:layout_width="120dp"
                 android:layout_height="48dp"
                 android:layout_marginStart="20dp"
-                android:layout_marginEnd="20dp"
                 android:autofillHints=""
+                android:editable="false"
                 android:ems="10"
+                android:focusableInTouchMode="false"
                 android:fontFamily="@font/work_sans"
                 android:inputType="textEmailAddress"
                 android:paddingStart="10dp"
                 android:textColor="@color/Black"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toEndOf="@+id/imageView2"
                 app:layout_constraintTop_toBottomOf="@+id/textView8" />
+
+            <EditText
+                android:id="@+id/time"
+                android:layout_width="120dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="35dp"
+                android:autofillHints=""
+                android:editable="false"
+                android:ems="10"
+                android:focusableInTouchMode="false"
+                android:fontFamily="@font/work_sans"
+                android:inputType="textEmailAddress"
+                android:paddingStart="10dp"
+                android:textColor="@color/Black"
+                app:layout_constraintStart_toEndOf="@+id/date"
+                app:layout_constraintTop_toBottomOf="@+id/textView17" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -111,7 +114,7 @@
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="15dp"
                 android:fontFamily="@font/work_sans_semibold"
-                android:labelFor="@id/bank_name"
+                android:labelFor="@id/date"
                 android:text="Payee"
                 android:textColor="@color/Black"
                 android:textSize="16sp"
@@ -121,7 +124,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <EditText
-                android:id="@+id/bank_name"
+                android:id="@+id/payee"
                 android:layout_width="0dp"
                 android:layout_height="48dp"
                 android:layout_marginStart="20dp"
@@ -160,7 +163,7 @@
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="15dp"
                 android:fontFamily="@font/work_sans_semibold"
-                android:labelFor="@id/bank_name"
+                android:labelFor="@id/date"
                 android:text="Note"
                 android:textColor="@color/Black"
                 android:textSize="16sp"
@@ -170,7 +173,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <EditText
-                android:id="@+id/bank_name"
+                android:id="@+id/note"
                 android:layout_width="0dp"
                 android:layout_height="48dp"
                 android:layout_marginStart="20dp"
@@ -209,7 +212,7 @@
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="15dp"
                 android:fontFamily="@font/work_sans_semibold"
-                android:labelFor="@id/bank_name"
+                android:labelFor="@id/date"
                 android:text="Status"
                 android:textColor="@color/Black"
                 android:textSize="16sp"
@@ -219,7 +222,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <Spinner
-                android:id="@+id/bank_name"
+                android:id="@+id/status"
                 android:layout_width="0dp"
                 android:layout_height="48dp"
                 android:layout_marginStart="20dp"
@@ -253,7 +256,7 @@
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="15dp"
                 android:fontFamily="@font/work_sans_semibold"
-                android:labelFor="@id/bank_name"
+                android:labelFor="@id/date"
                 android:text="Attachments"
                 android:textColor="@color/Black"
                 android:textSize="16sp"
@@ -263,22 +266,33 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <EditText
-                android:id="@+id/bank_name"
+                android:id="@+id/attachment"
                 android:layout_width="0dp"
                 android:layout_height="48dp"
                 android:layout_marginStart="20dp"
-                android:layout_marginEnd="20dp"
+                android:layout_marginEnd="25dp"
                 android:autofillHints=""
+                android:editable="false"
                 android:ems="10"
                 android:fontFamily="@font/work_sans"
                 android:inputType="textEmailAddress"
                 android:paddingStart="10dp"
                 android:textColor="@color/Black"
                 android:textColorHint="@color/Disabled"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintEnd_toStartOf="@+id/attach_button"
                 app:layout_constraintStart_toEndOf="@+id/imageView2"
                 app:layout_constraintTop_toBottomOf="@+id/textView8" />
+
+            <ImageView
+                android:id="@+id/attach_button"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginTop="36dp"
+                android:layout_marginEnd="30dp"
+                android:rotation="25"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/attach" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <Button
@@ -286,10 +300,9 @@
             android:layout_width="match_parent"
             android:layout_height="58dp"
             android:layout_marginStart="25dp"
-            android:layout_marginTop="150dp"
+            android:layout_marginTop="70dp"
             android:layout_marginEnd="25dp"
             android:backgroundTint="@color/Black"
-            android:enabled="false"
             android:fontFamily="@font/work_sans_medium"
             android:text="Confirm"
             android:textAllCaps="false"

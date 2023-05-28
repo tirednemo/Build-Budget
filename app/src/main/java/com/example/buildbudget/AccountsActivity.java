@@ -175,7 +175,7 @@ class AccountItemsRecycleViewAdapter extends RecyclerView.Adapter<AccountViewHol
             case "Cash":
                 viewHolder.icon.setImageResource(R.drawable.wallet);
                 break;
-            case "Mobile Banking":
+            case "General":
                 viewHolder.icon.setImageResource(R.drawable.mobile_wallet);
                 break;
             case "Credit Card":

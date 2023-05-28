@@ -1,6 +1,7 @@
 package com.example.buildbudget;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,8 +16,12 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.core.util.Pair;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,12 +40,16 @@ public class TransactionCategoryFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        categoryItemsOnClickHandler = index -> {
+            getActivity().getSupportFragmentManager().popBackStack();
+        };
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_transaction_category, container, false);
+        TransactionActivity parent = (TransactionActivity) getActivity();
+        parent.heading.setText("Categories");
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         List<Pair<String, Integer>> categoryList;
@@ -112,12 +121,14 @@ class CategoryItemsRecycleViewAdapter extends RecyclerView.Adapter<CategoryViewH
     List<Pair<String, Integer>> initialList;
     Context context;
     CategoryItemsOnClickHandler clickHandler;
+    TransactionActivity parent;
 
     public CategoryItemsRecycleViewAdapter(List<Pair<String, Integer>> list, Context context, CategoryItemsOnClickHandler clickHandler) {
         this.list = list;
         this.initialList = new ArrayList<>(list);
         this.context = context;
         this.clickHandler = clickHandler;
+        this.parent = (TransactionActivity) context;
     }
 
     @NonNull
@@ -135,7 +146,15 @@ class CategoryItemsRecycleViewAdapter extends RecyclerView.Adapter<CategoryViewH
         Pair<String, Integer> category = list.get(position);
         viewHolder.name.setText(category.first);
         viewHolder.icon.setImageResource(category.second);
-        viewHolder.itemView.setOnClickListener(v -> clickHandler.onClick(index));
+
+        viewHolder.itemView.setOnClickListener(v ->
+                {
+                    clickHandler.onClick(index);
+                    Pair<String, Integer> selected = list.get(index);
+                    parent.categoryName = selected.first;
+                    parent.categoryIcon.setImageResource(selected.second);
+                }
+        );
     }
 
     @Override

@@ -48,7 +48,7 @@
                 android:layout_marginStart="25dp"
                 android:layout_marginTop="16dp"
                 android:fontFamily="@font/work_sans_semibold"
-                android:labelFor="@id/bank_name"
+                android:labelFor="@id/date"
                 android:text="Bank name"
                 android:textColor="@color/Black"
                 android:textSize="16sp"
@@ -58,7 +58,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <Spinner
-                android:id="@+id/bank_name"
+                android:id="@+id/date"
                 android:layout_width="0dp"
                 android:layout_height="48dp"
                 android:layout_marginStart="25dp"

@@ -47,7 +47,7 @@ public class LoginTabFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_login_tab, container, false);
 
 
-        email = v.findViewById(R.id.bank_name);
+        email = v.findViewById(R.id.date);
         password = v.findViewById(R.id.password);
         email_status = v.findViewById(R.id.email_invalid);
         password_status = v.findViewById(R.id.password_invalid);

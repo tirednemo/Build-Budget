@@ -94,7 +94,7 @@ public class SignupTabFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_signup_tab, container, false);
 
         name = v.findViewById(R.id.name);
-        email = v.findViewById(R.id.bank_name);
+        email = v.findViewById(R.id.date);
         password = v.findViewById(R.id.password);
         email_status = v.findViewById(R.id.email_invalid);
         password_status = v.findViewById(R.id.password_invalid);

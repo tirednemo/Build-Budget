@@ -31,11 +31,16 @@ import com.bumptech.glide.Glide;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class DashboardActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener {
@@ -53,9 +58,9 @@ public class DashboardActivity extends AppCompatActivity implements
     RecordItemsRecycleViewAdapter recordsRecyclerViewAdapter;
     RecordItemsRecycleViewAdapter.RecordItemsOnClickHandler recordItemsOnClickHandler;
 
+    FirebaseAuth mAuth;
     DatabaseReference mDatabase;
-    User currentUser;
-    String uid, name, email, photo;
+    FirebaseUser currentUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,26 +70,8 @@ public class DashboardActivity extends AppCompatActivity implements
         Window window = getWindow();
         window.setStatusBarColor(ContextCompat.getColor(this, R.color.d_grey));
 
-
-// TODO: Retrieve user info from intent
-
-        mDatabase = FirebaseDatabase.getInstance("https://build-budget-71a7f-default-rtdb.asia-southeast1.firebasedatabase.app/").getReference();
-
-        if (getIntent().hasExtra("com.example.buildbudget.user")) {
-            uid = getIntent().getExtras().getString("com.example.buildbudget.user");
-            mDatabase.child("users")
-                    .child(uid)
-                    .get().addOnCompleteListener(task -> {
-                        if (!task.isSuccessful()) {
-                            Log.e("firebase", "Error getting data", task.getException());
-                        } else {
-                            Log.d("firebase", String.valueOf(task.getResult().getValue()));
-                            name = String.valueOf(task.getResult().child("name").getValue());
-                            email = String.valueOf(task.getResult().child("email").getValue());
-                            photo = String.valueOf(task.getResult().child("photo").getValue());
-                        }
-                    });
-        }
+        mAuth = FirebaseAuth.getInstance();
+        currentUser = mAuth.getCurrentUser();
 
 
 // TODO: Navigation Drawer for sidebar
@@ -94,7 +81,7 @@ public class DashboardActivity extends AppCompatActivity implements
         View navHead = navigationView.getHeaderView(0);
         ImageView me = navHead.findViewById(R.id.me);
         Glide.with(getApplicationContext())
-                .load(photo)
+                .load(currentUser.getPhotoUrl())
                 .into(me);
         me.setOnClickListener(view -> {
             Intent start = new Intent(this, ProfileActivity.class);
@@ -170,15 +157,11 @@ public class DashboardActivity extends AppCompatActivity implements
 
 // TODO: Recycler View for accounts and date-ordered records
 
-        List<Account> accountList;
-        accountList = getAccounts();
+        getAccountCards();
         List<Records> recordList;
         recordList = getRecords();
 
-        accountCardRecyclerView = findViewById(R.id.account_cards_view);
-        accountCardsRecyclerViewAdapter = new AccountCardItemsRecycleViewAdapter(accountList, getApplication(), accountCardItemsOnClickHandler);
-        accountCardRecyclerView.setAdapter(accountCardsRecyclerViewAdapter);
-        accountCardRecyclerView.setLayoutManager(new LinearLayoutManager(DashboardActivity.this, LinearLayoutManager.HORIZONTAL, false));
+
 
         recordRecyclerView = findViewById(R.id.date_view);
         recordsRecyclerViewAdapter = new RecordItemsRecycleViewAdapter(recordList, getApplication(), recordItemsOnClickHandler);
@@ -187,12 +170,31 @@ public class DashboardActivity extends AppCompatActivity implements
     }
 
 
-    // Sample data for accounts
-    private List<Account> getAccounts() {
+
+    private void getAccountCards() {
         List<Account> list = new ArrayList<>();
-        list.add(new Account("Debit Card", "card1", 160.0));
-        list.add(new Account("Cash", "Cash", 40.0));
-        return list;
+
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        DatabaseReference mDatabase = FirebaseDatabase.getInstance("https://build-budget-71a7f-default-rtdb.asia-southeast1.firebasedatabase.app/").getReference();
+
+        mDatabase.child("users").child(user.getUid()).child("accounts")
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        for (DataSnapshot accountSnapshot : dataSnapshot.getChildren()) {
+                            Account account = accountSnapshot.getValue(Account.class);
+                            list.add(account);
+                        }
+                        accountCardRecyclerView = findViewById(R.id.account_cards_view);
+                        accountCardsRecyclerViewAdapter = new AccountCardItemsRecycleViewAdapter(list, getApplication(), accountCardItemsOnClickHandler);
+                        accountCardRecyclerView.setAdapter(accountCardsRecyclerViewAdapter);
+                        accountCardRecyclerView.setLayoutManager(new LinearLayoutManager(DashboardActivity.this, LinearLayoutManager.HORIZONTAL, false));
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                    }
+                });
     }
 
     // Sample data for records
@@ -230,7 +232,6 @@ public class DashboardActivity extends AppCompatActivity implements
 //                break;
             case R.id.nav_acc:
                 start = new Intent(this, AccountsActivity.class);
-                start.putExtra("com.example.buildbudget.uid", uid);
                 startActivity(start);
                 break;
 //            case R.id.nav_banksync:
@@ -270,7 +271,6 @@ public class DashboardActivity extends AppCompatActivity implements
 
             case R.id.nav_settings:
                 start = new Intent(this, SettingsActivity.class);
-                start.putExtra("com.example.buildbudget.uid", uid);
                 startActivity(start);
                 break;
 //            case R.id.nav_help:
@@ -292,7 +292,7 @@ public class DashboardActivity extends AppCompatActivity implements
 
 class AccountCardViewHolder extends RecyclerView.ViewHolder {
     LinearLayout front, back;
-    TextView title_front, title_back, balance, holder, provider_front, provider_back, number, expiry;
+    TextView title_front, title_back, balance, holder, provider_front, provider_back, number, expiry, title_heading, expireson, cvv_heading, cvv;
 
     AccountCardViewHolder(View itemView) {
         super(itemView);
@@ -303,10 +303,14 @@ class AccountCardViewHolder extends RecyclerView.ViewHolder {
         provider_front = itemView.findViewById(R.id.card_provider_front);
 
         back = itemView.findViewById(R.id.card_layout_back);
+        title_heading = itemView.findViewById(R.id.card_or_account);
         title_back = itemView.findViewById(R.id.card_title_back);
         provider_back = itemView.findViewById(R.id.card_provider_back);
         number = itemView.findViewById(R.id.card_number_back);
+        expireson= itemView.findViewById(R.id.expires_on);
         expiry = itemView.findViewById(R.id.card_expiry_back);
+        cvv_heading = itemView.findViewById(R.id.cvv);
+        cvv = itemView.findViewById(R.id.card_cvv_back);
     }
 }
 
@@ -338,15 +342,29 @@ class AccountCardItemsRecycleViewAdapter extends RecyclerView.Adapter<AccountCar
         final int index = viewHolder.getAdapterPosition();
 
         Account account = list.get(position);
-//        viewHolder.title_front.setText(account.title);
-//        viewHolder.title_back.setText(account.title);
-//        viewHolder.balance.setText(String.valueOf(account.balance));
-//        viewHolder.holder.setText(account.holder);
-//        viewHolder.provider_front.setText(account.provider);
-//        viewHolder.provider_back.setText(account.provider);
-//        viewHolder.number.setText(account.number);
-//        if (account.type == "card")
-//            viewHolder.expiry.setText(account.year);
+        viewHolder.title_front.setText(account.Title);
+        viewHolder.title_back.setText(account.Title);
+        viewHolder.balance.setText(String.valueOf(account.Balance));
+        viewHolder.number.setText(account.Number);
+        if (Objects.equals(account.Type, "Debit Card") || Objects.equals(account.Type, "Credit Card")){
+            viewHolder.holder.setText(account.Holder);
+            viewHolder.provider_front.setText(account.Provider);
+            viewHolder.provider_back.setText(account.Provider);
+            viewHolder.title_heading.setText("CARD NUMBER");
+            viewHolder.expireson.setText("EXPIRES ON");
+            viewHolder.expiry.setText(account.Validity);
+            viewHolder.cvv_heading.setText("CVV");
+            viewHolder.cvv.setText("***");}
+        else{
+            viewHolder.holder.setText("");
+            viewHolder.provider_front.setText("");
+            viewHolder.provider_back.setText("");
+            viewHolder.title_heading.setText("ACCOUNT NUMBER");
+            viewHolder.expireson.setText("");
+            viewHolder.expiry.setText("");
+            viewHolder.cvv_heading.setText("");
+            viewHolder.cvv.setText("");
+        }
 
         AnimatorSet frontAnim = (AnimatorSet) AnimatorInflater.loadAnimator(viewHolder.itemView.getContext(), R.animator.front_animator);
         AnimatorSet backAnim = (AnimatorSet) AnimatorInflater.loadAnimator(viewHolder.itemView.getContext(), R.animator.back_animator);
