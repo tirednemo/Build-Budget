@@ -116,7 +116,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/button7"
         app:layout_constraintVertical_bias="0.225"
-        app:srcCompat="@drawable/img" />
+        app:srcCompat="@drawable/wallet" />
 
     <ImageView
         android:id="@+id/imageView13"
@@ -128,7 +128,7 @@
         app:layout_constraintStart_toStartOf="@+id/imageView10"
         app:layout_constraintTop_toTopOf="@+id/imageView10"
         app:layout_constraintVertical_bias="0.418"
-        app:srcCompat="@drawable/debt_card" />
+        app:srcCompat="@drawable/card_debt" />
 
     <TextView
         android:id="@+id/textView20"
@@ -162,15 +162,15 @@
 
     <ImageView
         android:id="@+id/imageView16"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="128dp"
+        android:layout_height="77dp"
         app:layout_constraintBottom_toBottomOf="@+id/imageView13"
         app:layout_constraintEnd_toEndOf="@+id/imageView13"
         app:layout_constraintHorizontal_bias="0.942"
         app:layout_constraintStart_toEndOf="@+id/totaldebt"
         app:layout_constraintTop_toTopOf="@+id/imageView13"
         app:layout_constraintVertical_bias="1.0"
-        app:srcCompat="@drawable/img_1" />
+        app:srcCompat="@drawable/tax" />
 
     <Button
         android:id="@+id/button7"

@@ -9,7 +9,7 @@
     <color name="d_violet">#5B3C8F</color>
     <color name="d_orange">#CF4D1B</color>
     <color name="d_amber">#CC8A00</color>
-    <color name="Darker_grey">#8f8f8f</color>
+
     <color name="Black">#000000</color>
     <color name="White">#FFFFFF</color>
     <color name="Grey">#EFEFEF</color>
@@ -21,7 +21,7 @@
     <color name="Violet">#AF96FB</color>
     <color name="Orange">#FC7339</color>
     <color name="Amber">#FFAA00</color>
-    <color name="Ash">#d7d7d7</color>
+
     <color name="Default">#D9D9D9</color>
     <color name="Success">#30D158</color>
     <color name="Error">#FF3D71</color>

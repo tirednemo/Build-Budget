@@ -1,6 +1,5 @@
 package com.example.buildbudget;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -12,7 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.buildbudget.databinding.ActivityBudgetBinding;
 import com.example.buildbudget.databinding.ActivityTransactionBinding;
 
-public class budgetActivity extends AppCompatActivity {
+public class BudgetActivity extends AppCompatActivity {
     private EditText input1;
     private TextView budg;
     private TextView exp;
