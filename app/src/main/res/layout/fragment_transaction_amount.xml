@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/constraintLayout7"
+    android:layout_width="match_parent"
+    android:layout_height="650dp"
+    android:background="@drawable/rounded_corners_base"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent">
+
+    <TextView
+        android:id="@+id/textView15"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="90dp"
+        android:layout_marginEnd="5dp"
+        android:fontFamily="@font/work_sans_semibold"
+        android:text="Current Balance:"
+        android:textColor="@color/Black"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toStartOf="@+id/account_from_balance"
+        app:layout_constraintTop_toBottomOf="@+id/amount" />
+
+    <TextView
+        android:id="@+id/account_from_balance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="90dp"
+        android:layout_marginEnd="120dp"
+        android:fontFamily="@font/work_sans_semibold"
+        android:text="200"
+        android:textColor="@color/Black"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/amount" />
+
+    <ImageButton
+        android:id="@+id/incomeButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="230dp"
+        android:background="@drawable/rounded_shadow_button"
+        android:backgroundTint="@color/Teal"
+        android:cropToPadding="true"
+        android:elevation="5dp"
+        android:scaleType="centerInside"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/plus" />
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/imageButton4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="154dp"
+        android:layout_marginTop="90dp"
+        android:layout_marginEnd="154dp"
+        android:backgroundTint="@color/Magenta"
+        android:visibility="visible"
+        app:contentPadding="15dp"
+        app:cornerRadius="140dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <Spinner
+            android:id="@+id/account_from_spinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:fontFamily="@font/work_sans_semibold"
+            android:textAllCaps="false"
+            android:textSize="16sp" />
+    </com.google.android.material.card.MaterialCardView>
+
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/account_to_cntnr"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="154dp"
+        android:layout_marginTop="9dp"
+        android:layout_marginEnd="154dp"
+        android:backgroundTint="@color/Violet"
+        android:visibility="gone"
+        app:contentPadding="15dp"
+        app:cornerRadius="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageButton4">
+
+        <Spinner
+            android:id="@+id/account_to_spinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:fontFamily="@font/work_sans_semibold"
+            android:textAllCaps="false"
+            android:textSize="16sp" />
+    </com.google.android.material.card.MaterialCardView>
+
+    <ImageButton
+        android:id="@+id/expenseButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/rounded_shadow_button"
+        android:backgroundTint="@color/Orange"
+        android:elevation="5dp"
+        android:scaleType="centerInside"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/incomeButton"
+        app:srcCompat="@drawable/minus" />
+
+    <ImageButton
+        android:id="@+id/transferButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/rounded_shadow_button"
+        android:backgroundTint="@color/Yellow"
+        android:elevation="5dp"
+        android:scaleType="centerInside"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/expenseButton"
+        app:srcCompat="@drawable/swap" />
+
+    <EditText
+        android:id="@+id/amount"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="100dp"
+        android:layout_marginTop="290dp"
+        android:layout_marginEnd="100dp"
+        android:background="@android:color/transparent"
+        android:digits="0123456789."
+        android:fontFamily="@font/work_sans_semibold"
+        android:hint="$0.00"
+        android:inputType="numberDecimal"
+        android:textAlignment="center"
+        android:textColor="@color/Black"
+        android:textSize="48sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/confirm_button"
+        android:layout_width="match_parent"
+        android:layout_height="58dp"
+        android:layout_marginStart="25dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="25dp"
+        android:backgroundTint="@color/Disabled"
+        android:enabled="false"
+        android:fontFamily="@font/work_sans_medium"
+        android:text="Confirm"
+        android:textAllCaps="false"
+        android:textColor="@color/White"
+        android:textSize="18sp"
+        app:cornerRadius="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/account_from_balance" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

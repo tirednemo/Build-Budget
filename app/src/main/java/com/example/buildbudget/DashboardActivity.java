@@ -1,6 +1,11 @@
 package com.example.buildbudget;
 
+import android.animation.Animator;
+import android.animation.AnimatorInflater;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -8,41 +13,54 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
+import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
+import com.bumptech.glide.Glide;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
-public class DashboardActivity extends AppCompatActivity {
+public class DashboardActivity extends AppCompatActivity implements
+        NavigationView.OnNavigationItemSelectedListener {
+
+    DrawerLayout mDrawer;
+    ImageView mNotification;
 
     FloatingActionButton mAddRecord, mAddOCR, mAddManual;
     TextView addText, OCRText, manualText;
-    Boolean isAllFabsVisible;
-    RecyclerView accountRecyclerView, recordRecyclerView;
-    AccountItemsRecycleViewAdapter accountsRecyclerViewAdapter;
+    Boolean isAllFABsVisible;
+
+    RecyclerView accountCardRecyclerView, recordRecyclerView;
+    AccountCardItemsRecycleViewAdapter accountCardsRecyclerViewAdapter;
+    AccountCardItemsRecycleViewAdapter.AccountCardItemsOnClickHandler accountCardItemsOnClickHandler;
     RecordItemsRecycleViewAdapter recordsRecyclerViewAdapter;
-    ClickListener listener;
-    public DrawerLayout drawerLayout;
-    public ActionBarDrawerToggle actionBarDrawerToggle;
-    private DatabaseReference mDatabase;
-    public User currentUser;
-    TextView username;
+    RecordItemsRecycleViewAdapter.RecordItemsOnClickHandler recordItemsOnClickHandler;
+
+    FirebaseAuth mAuth;
+    DatabaseReference mDatabase;
+    FirebaseUser currentUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,31 +70,46 @@ public class DashboardActivity extends AppCompatActivity {
         Window window = getWindow();
         window.setStatusBarColor(ContextCompat.getColor(this, R.color.d_grey));
 
-        mDatabase = FirebaseDatabase.getInstance("https://build-budget-71a7f-default-rtdb.asia-southeast1.firebasedatabase.app/").getReference();
-        username = findViewById(R.id.username);
+        mAuth = FirebaseAuth.getInstance();
+        currentUser = mAuth.getCurrentUser();
 
-        if (getIntent().hasExtra("com.example.buildbudget.user")) {
-            mDatabase.child("users").child(getIntent().getExtras().getString("com.example.buildbudget.user")).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<DataSnapshot> task) {
-                    if (!task.isSuccessful()) {
-                        Log.e("firebase", "Error getting data", task.getException());
-                    } else {
-                        Log.d("firebase", String.valueOf(task.getResult().getValue()));
-                        String name = String.valueOf(task.getResult().child("name").getValue());
-                        String email = String.valueOf(task.getResult().child("email").getValue());
-                        currentUser = new User(name, email);
-                        username.setText(currentUser.name);
-                    }
-                }
-            });
-        }
 
-//        drawerLayout = findViewById(R.id.my_drawer_layout);
-//        actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.nav_open, R.string.nav_close);
-//        drawerLayout.addDrawerListener(actionBarDrawerToggle);
-//        actionBarDrawerToggle.syncState();
+// TODO: Navigation Drawer for sidebar
 
+        NavigationView navigationView = findViewById(R.id.nav_view);
+
+        View navHead = navigationView.getHeaderView(0);
+        ImageView me = navHead.findViewById(R.id.me);
+        Glide.with(getApplicationContext())
+                .load(currentUser.getPhotoUrl())
+                .into(me);
+        me.setOnClickListener(view -> {
+            Intent start = new Intent(this, ProfileActivity.class);
+            startActivity(start);
+        });
+
+        navigationView.setNavigationItemSelectedListener(this);
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        mDrawer = findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, mDrawer, toolbar, R.string.open_nav, R.string.close_nav);
+        mDrawer.addDrawerListener(toggle);
+        toggle.syncState();
+
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.menu);
+
+//        if (savedInstanceState == null) {
+//            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();
+//            navigationView.setCheckedItem(R.id.nav_home);
+//        }
+
+
+// TODO:  Floating Action Button for new record
 
         mAddRecord = findViewById(R.id.add_record);
         mAddOCR = findViewById(R.id.ocr_add);
@@ -84,23 +117,23 @@ public class DashboardActivity extends AppCompatActivity {
         addText = findViewById(R.id.add_record_text);
         OCRText = findViewById(R.id.ocr_add_text);
         manualText = findViewById(R.id.manual_add_text);
-        isAllFabsVisible = false;
+        isAllFABsVisible = false;
 
         mAddRecord.setOnClickListener(view -> {
-            if (!isAllFabsVisible) {
+            if (!isAllFABsVisible) {
                 mAddOCR.show();
                 mAddManual.show();
                 addText.setVisibility(View.VISIBLE);
                 OCRText.setVisibility(View.VISIBLE);
                 manualText.setVisibility(View.VISIBLE);
-                isAllFabsVisible = true;
+                isAllFABsVisible = true;
             } else {
                 mAddOCR.hide();
                 mAddManual.hide();
                 addText.setVisibility(View.GONE);
                 OCRText.setVisibility(View.GONE);
                 manualText.setVisibility(View.GONE);
-                isAllFabsVisible = false;
+                isAllFABsVisible = false;
             }
         });
 
@@ -108,46 +141,60 @@ public class DashboardActivity extends AppCompatActivity {
             //ocr activity
         });
         mAddManual.setOnClickListener(view -> {
-            //manual activity
+            Intent start = new Intent(this, TransactionActivity.class);
+            startActivity(start);
         });
 
 
-        List<Records> recordList = new ArrayList<>();
+// TODO:  Other Buttons
+
+        mNotification = findViewById(R.id.wrap);
+        mNotification.setOnClickListener(view -> {
+            Intent start = new Intent(this, NotificationsActivity.class);
+            startActivity(start);
+        });
+
+
+// TODO: Recycler View for accounts and date-ordered records
+
+        getAccountCards();
+        List<Records> recordList;
         recordList = getRecords();
-        List<Account> accountList = new ArrayList<>();
-        accountList = getAccounts();
 
-        recordRecyclerView = (RecyclerView) findViewById(R.id.date_view);
-        accountRecyclerView = (RecyclerView) findViewById(R.id.accounts_view);
-        listener = new ClickListener() {
-//            @Override
-//            public void click(int index) {
-//                Toast.makeText(DashboardActivity.this, "clicked item index is " + index, Toast.LENGTH_LONG).show();
-//            }
-        };
 
-        recordsRecyclerViewAdapter = new RecordItemsRecycleViewAdapter(recordList, getApplication(), listener);
+
+        recordRecyclerView = findViewById(R.id.date_view);
+        recordsRecyclerViewAdapter = new RecordItemsRecycleViewAdapter(recordList, getApplication(), recordItemsOnClickHandler);
         recordRecyclerView.setAdapter(recordsRecyclerViewAdapter);
-        recordRecyclerView.setLayoutManager(new LinearLayoutManager(DashboardActivity.this));
-
-        accountsRecyclerViewAdapter = new AccountItemsRecycleViewAdapter(accountList, getApplication(), listener);
-        accountRecyclerView.setAdapter(accountsRecyclerViewAdapter);
-        accountRecyclerView.setLayoutManager(new LinearLayoutManager(DashboardActivity.this, LinearLayoutManager.HORIZONTAL, false));
+        recordRecyclerView.setLayoutManager(new LinearLayoutManager(DashboardActivity.this, LinearLayoutManager.VERTICAL, false));
     }
 
 
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 
-        if (actionBarDrawerToggle.onOptionsItemSelected(item)) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
+    private void getAccountCards() {
+        List<Account> list = new ArrayList<>();
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        DatabaseReference mDatabase = FirebaseDatabase.getInstance("https://build-budget-71a7f-default-rtdb.asia-southeast1.firebasedatabase.app/").getReference();
+
+        mDatabase.child("users").child(user.getUid()).child("accounts")
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        for (DataSnapshot accountSnapshot : dataSnapshot.getChildren()) {
+                            Account account = accountSnapshot.getValue(Account.class);
+                            list.add(account);
+                        }
+                        accountCardRecyclerView = findViewById(R.id.account_cards_view);
+                        accountCardsRecyclerViewAdapter = new AccountCardItemsRecycleViewAdapter(list, getApplication(), accountCardItemsOnClickHandler);
+                        accountCardRecyclerView.setAdapter(accountCardsRecyclerViewAdapter);
+                        accountCardRecyclerView.setLayoutManager(new LinearLayoutManager(DashboardActivity.this, LinearLayoutManager.HORIZONTAL, false));
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                    }
+                });
     }
 
     // Sample data for records
@@ -162,115 +209,257 @@ public class DashboardActivity extends AppCompatActivity {
         return list;
     }
 
-    // Sample data for accounts
-    private List<Account> getAccounts() {
-        List<Account> list = new ArrayList<>();
-        list.add(new Account("Debit Card", "card1", 160.0));
-        list.add(new Account("Cash", "Cash", 40.0));
-        return list;
+
+    @Override
+    public void onBackPressed() {
+        if (mDrawer.isDrawerOpen(GravityCompat.START)) {
+            mDrawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        Intent start;
+        int option = item.getItemId();
+
+        switch (option) {
+
+//            case R.id.nav_home:
+//                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();
+//                break;
+            case R.id.nav_acc:
+                start = new Intent(this, AccountsActivity.class);
+                startActivity(start);
+                break;
+//            case R.id.nav_banksync:
+//                break;
+//            case R.id.nav_stats:
+//                break;
+//
+//            case R.id.nav_budget:
+//                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();
+//                break;
+//            case R.id.nav_debts:
+//                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();
+//                break;
+//            case R.id.nav_ppay:
+//                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();
+//                break;
+//            case R.id.nav_goals:
+//                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();
+//                break;
+//            case R.id.nav_invests:
+//                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();
+//                break;
+//
+//            case R.id.nav_currency_ex:
+//                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();
+//                break;
+//            case R.id.nav_stock_ex:
+//                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();
+//                break;
+//
+//            case R.id.nav_loyal:
+//                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();
+//                break;
+//            case R.id.nav_warranty:
+//                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();
+//                break;
+
+            case R.id.nav_settings:
+                start = new Intent(this, SettingsActivity.class);
+                startActivity(start);
+                break;
+//            case R.id.nav_help:
+//                break;
+            case R.id.nav_logout:
+                FirebaseAuth.getInstance().signOut();
+                start = new Intent(this, AuthenticationActivity.class);
+                startActivity(start);
+                break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + option);
+        }
+
+        mDrawer.closeDrawer(GravityCompat.START);
+        return true;
+    }
+}
+
+
+class AccountCardViewHolder extends RecyclerView.ViewHolder {
+    LinearLayout front, back;
+    TextView title_front, title_back, balance, holder, provider_front, provider_back, number, expiry, title_heading, expireson, cvv_heading, cvv;
+
+    AccountCardViewHolder(View itemView) {
+        super(itemView);
+        front = itemView.findViewById(R.id.card_layout_front);
+        title_front = itemView.findViewById(R.id.card_title_front);
+        balance = itemView.findViewById(R.id.card_bal_front);
+        holder = itemView.findViewById(R.id.cardholder_front);
+        provider_front = itemView.findViewById(R.id.card_provider_front);
+
+        back = itemView.findViewById(R.id.card_layout_back);
+        title_heading = itemView.findViewById(R.id.card_or_account);
+        title_back = itemView.findViewById(R.id.card_title_back);
+        provider_back = itemView.findViewById(R.id.card_provider_back);
+        number = itemView.findViewById(R.id.card_number_back);
+        expireson= itemView.findViewById(R.id.expires_on);
+        expiry = itemView.findViewById(R.id.card_expiry_back);
+        cvv_heading = itemView.findViewById(R.id.cvv);
+        cvv = itemView.findViewById(R.id.card_cvv_back);
+    }
+}
+
+class AccountCardItemsRecycleViewAdapter extends RecyclerView.Adapter<AccountCardViewHolder> {
+    public interface AccountCardItemsOnClickHandler {
+        void onClick(int index);
+    }
+
+    List<Account> list;
+    Context context;
+    AccountCardItemsOnClickHandler clickHandler;
+
+    public AccountCardItemsRecycleViewAdapter(List<Account> list, Context context, AccountCardItemsOnClickHandler clickHandler) {
+        this.list = list;
+        this.context = context;
+        this.clickHandler = clickHandler;
+    }
+
+    @NonNull
+    @Override
+    public AccountCardViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        Context context = parent.getContext();
+        LayoutInflater inflater = LayoutInflater.from(context);
+        return new AccountCardViewHolder(inflater.inflate(R.layout.layout_account_cards, parent, false));
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull AccountCardViewHolder viewHolder, int position) {
+        final int index = viewHolder.getAdapterPosition();
+
+        Account account = list.get(position);
+        viewHolder.title_front.setText(account.Title);
+        viewHolder.title_back.setText(account.Title);
+        viewHolder.balance.setText(String.valueOf(account.Balance));
+        viewHolder.number.setText(account.Number);
+        if (Objects.equals(account.Type, "Debit Card") || Objects.equals(account.Type, "Credit Card")){
+            viewHolder.holder.setText(account.Holder);
+            viewHolder.provider_front.setText(account.Provider);
+            viewHolder.provider_back.setText(account.Provider);
+            viewHolder.title_heading.setText("CARD NUMBER");
+            viewHolder.expireson.setText("EXPIRES ON");
+            viewHolder.expiry.setText(account.Validity);
+            viewHolder.cvv_heading.setText("CVV");
+            viewHolder.cvv.setText("***");}
+        else{
+            viewHolder.holder.setText("");
+            viewHolder.provider_front.setText("");
+            viewHolder.provider_back.setText("");
+            viewHolder.title_heading.setText("ACCOUNT NUMBER");
+            viewHolder.expireson.setText("");
+            viewHolder.expiry.setText("");
+            viewHolder.cvv_heading.setText("");
+            viewHolder.cvv.setText("");
+        }
+
+        AnimatorSet frontAnim = (AnimatorSet) AnimatorInflater.loadAnimator(viewHolder.itemView.getContext(), R.animator.front_animator);
+        AnimatorSet backAnim = (AnimatorSet) AnimatorInflater.loadAnimator(viewHolder.itemView.getContext(), R.animator.back_animator);
+        float scale = viewHolder.itemView.getContext().getResources().getDisplayMetrics().density;
+        viewHolder.front.setCameraDistance(8000 * scale);
+        viewHolder.back.setCameraDistance(8000 * scale);
+
+        viewHolder.front.setOnClickListener(v -> {
+            frontAnim.setTarget(viewHolder.front);
+            frontAnim.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    viewHolder.front.setVisibility(View.GONE);
+                    backAnim.setTarget(viewHolder.front);
+                    viewHolder.back.setVisibility(View.VISIBLE);
+                }
+            });
+            frontAnim.start();
+            backAnim.start();
+        });
+        viewHolder.back.setOnClickListener(v -> {
+            frontAnim.setTarget(viewHolder.back);
+            frontAnim.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    viewHolder.back.setVisibility(View.GONE);
+                    backAnim.setTarget(viewHolder.back);
+                    viewHolder.front.setVisibility(View.VISIBLE);
+                }
+            });
+            frontAnim.start();
+            backAnim.start();
+        });
+
+        viewHolder.front.setOnLongClickListener(new View.OnLongClickListener() {
+            public boolean onLongClick(View v) {
+//                Intent start = new Intent(v.getContext(), RecordsActivity.class);
+//                v.getContext().startActivity(start);
+                return true;
+            }
+        });
+    }
+
+    @Override
+    public int getItemCount() {
+        return list.size();
+    }
+}
+
+
+class RecordViewHolder extends RecyclerView.ViewHolder {
+    TextView title, account, amount;
+
+    RecordViewHolder(View itemView) {
+        super(itemView);
+
+        title = itemView.findViewById(R.id.add_account);
+        account = itemView.findViewById(R.id.textView3);
+        amount = itemView.findViewById(R.id.textView4);
     }
 }
 
 class RecordItemsRecycleViewAdapter extends RecyclerView.Adapter<RecordViewHolder> {
-
-    List<Records> list = Collections.emptyList();
-    Context context;
-    ClickListener listener;
-
-    public RecordItemsRecycleViewAdapter(List<Records> list, Context context, ClickListener listener) {
-        this.list = list;
-        this.context = context;
-        this.listener = listener;
+    public interface RecordItemsOnClickHandler {
+        void onClick(int index);
     }
 
+    List<Records> list;
+    Context context;
+    RecordItemsOnClickHandler clickHandler;
+
+    public RecordItemsRecycleViewAdapter(List<Records> list, Context context, RecordItemsOnClickHandler clickHandler) {
+        this.list = list;
+        this.context = context;
+        this.clickHandler = clickHandler;
+    }
+
+    @NonNull
     @Override
     public RecordViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-
         Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
-        RecordViewHolder viewHolder = new RecordViewHolder(inflater.inflate(R.layout.record_items_layout, parent, false));
-        return viewHolder;
+        return new RecordViewHolder(inflater.inflate(R.layout.layout_record_items, parent, false));
     }
 
     @Override
     public void onBindViewHolder(@NonNull RecordViewHolder viewHolder, int position) {
         final int index = viewHolder.getAdapterPosition();
-        viewHolder.title.setText(list.get(position).title);
-        viewHolder.account.setText(list.get(position).account);
-        viewHolder.amount.setText(list.get(position).amount + "");
-        viewHolder.view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                listener.click(index);
-            }
-        });
-    }
 
-    @Override
-    public int getItemCount() {
-        return list.size();
-    }
+        Records record = list.get(position);
+        viewHolder.title.setText(record.title);
+        viewHolder.account.setText(record.account);
+        viewHolder.amount.setText(String.valueOf(record.amount));
 
-    @Override
-    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
-        super.onAttachedToRecyclerView(recyclerView);
-    }
-}
-
-class ClickListener {
-    public void click(int index) {
-    }
-}
-
-class RecordViewHolder extends RecyclerView.ViewHolder {
-    TextView title;
-    TextView account;
-    TextView amount;
-    View view;
-
-    RecordViewHolder(View itemView) {
-        super(itemView);
-
-        title = (TextView) itemView.findViewById(R.id.textView2);
-        account = (TextView) itemView.findViewById(R.id.textView3);
-        amount = (TextView) itemView.findViewById(R.id.textView4);
-        view = itemView;
-    }
-}
-
-
-class AccountItemsRecycleViewAdapter extends RecyclerView.Adapter<AccountViewHolder> {
-    List<Account> list = Collections.emptyList();
-    Context context;
-    ClickListener listener;
-
-    public AccountItemsRecycleViewAdapter(List<Account> list, Context context, ClickListener listener) {
-        this.list = list;
-        this.context = context;
-        this.listener = listener;
-    }
-
-    @NonNull
-    @Override
-    public AccountViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        Context context = parent.getContext();
-        LayoutInflater inflater = LayoutInflater.from(context);
-        AccountViewHolder viewHolder = new AccountViewHolder(inflater.inflate(R.layout.account_cards_layout, parent, false));
-        return viewHolder;
-    }
-
-    @Override
-    public void onBindViewHolder(@NonNull AccountViewHolder viewHolder, int position) {
-        final int index = viewHolder.getAdapterPosition();
-        viewHolder.name.setText(list.get(position).name);
-        viewHolder.balance.setText(list.get(position).balance + "");
-        viewHolder.view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                listener.click(index);
-            }
-        });
-
+        viewHolder.itemView.setOnClickListener(v -> clickHandler.onClick(index));
     }
 
     @Override
@@ -279,16 +468,5 @@ class AccountItemsRecycleViewAdapter extends RecyclerView.Adapter<AccountViewHol
     }
 }
 
-class AccountViewHolder extends RecyclerView.ViewHolder {
-    TextView name;
-    TextView balance;
-    View view;
 
-    AccountViewHolder(View itemView) {
-        super(itemView);
 
-        name = (TextView) itemView.findViewById(R.id.account_name);
-        balance = (TextView) itemView.findViewById(R.id.account_balance);
-        view = itemView;
-    }
-}

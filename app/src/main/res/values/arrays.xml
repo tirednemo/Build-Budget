@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="Language">
+        <item>English</item>
+        <item>বাংলা</item>
+    </string-array>
+    <string-array name="languageAlias">
+        <item>"en-US"</item>
+        <item>"bn"</item>
+    </string-array>
+
+    <string-array name="Currency">
+        <item>BDT</item>
+        <item>USD</item>
+    </string-array>
+    <string-array name="currencyAlias">
+        <item>"BDT"</item>
+        <item>"USD"</item>
+    </string-array>
+</resources>

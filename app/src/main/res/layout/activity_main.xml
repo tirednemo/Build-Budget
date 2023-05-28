@@ -9,12 +9,14 @@
 
     <ImageView
         android:id="@+id/horizon"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:contentDescription="@null"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/horizon" />
+        app:srcCompat="@drawable/horizon"
+        tools:ignore="ImageContrastCheck" />
 
     <ImageView
         android:id="@+id/sparkle1"
@@ -22,19 +24,23 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="57dp"
         android:layout_marginTop="57dp"
+        android:contentDescription="@null"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/teal" />
+        app:srcCompat="@drawable/teal"
+        tools:ignore="ImageContrastCheck" />
 
     <ImageView
         android:id="@+id/sparkle2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="119dp"
-        android:layout_marginEnd="48dp"
+        android:layout_marginTop="144dp"
+        android:layout_marginEnd="52dp"
+        android:contentDescription="@null"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/violet" />
+        app:srcCompat="@drawable/violet"
+        tools:ignore="ImageContrastCheck" />
 
     <ImageView
         android:id="@+id/sparkle3"
@@ -42,9 +48,11 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="110dp"
+        android:contentDescription="@null"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/greeny" />
+        app:srcCompat="@drawable/green"
+        tools:ignore="ImageContrastCheck" />
 
     <ImageView
         android:id="@+id/sparkle4"
@@ -52,19 +60,23 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="30dp"
         android:layout_marginBottom="259dp"
+        android:contentDescription="@null"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/orange" />
+        app:srcCompat="@drawable/orange"
+        tools:ignore="ImageContrastCheck" />
 
     <ImageView
         android:id="@+id/sparkle5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="134dp"
-        android:layout_marginBottom="135dp"
+        android:layout_marginStart="132dp"
+        android:layout_marginBottom="144dp"
+        android:contentDescription="@null"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/magenta" />
+        app:srcCompat="@drawable/magenta"
+        tools:ignore="ImageContrastCheck" />
 
     <ImageView
         android:id="@+id/sparkle6"
@@ -72,9 +84,11 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="39dp"
         android:layout_marginBottom="208dp"
+        android:contentDescription="@null"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/yellow" />
+        app:srcCompat="@drawable/yellow"
+        tools:ignore="ImageContrastCheck" />
 
     <ImageView
         android:id="@+id/dough_bg"
@@ -84,12 +98,13 @@
         android:layout_marginTop="95dp"
         android:layout_marginEnd="21dp"
         android:layout_marginBottom="266dp"
+        android:contentDescription="@null"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0"
+        app:layout_constraintVertical_bias="0.625"
         app:srcCompat="@drawable/dough_bg" />
 
     <TextView

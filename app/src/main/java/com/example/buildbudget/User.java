@@ -13,6 +13,10 @@ public class User {
     public User(String name, String email) {
         this.name = name;
         this.email = email;
-        this.photo = "https://i.scdn.co/image/ab6761610000e5eb666a1746919918e63fafb413";
+        this.photo = "https://firebasestorage.googleapis.com/v0/b/build-budget-71a7f.appspot.com/o/test%20account.png?alt=media&token=b9cd2260-4aa7-462c-a058-cf30e644f8fb";
+    }
+
+    public void setPhoto(String photouri) {
+        this.photo = photouri;
     }
 }

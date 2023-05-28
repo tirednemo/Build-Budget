@@ -2,7 +2,6 @@ package com.example.buildbudget;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,10 +40,10 @@ public class TutorialActivity extends AppCompatActivity {
         featureItems = new ArrayList<>();
         featureItems.add(new TutorialItemsClass(R.drawable.billing, "Track"));
         featureItems.add(new TutorialItemsClass(R.drawable.bank, "Sync"));
-        featureItems.add(new TutorialItemsClass(R.drawable.stat, "Analyse"));
-        featureItems.add(new TutorialItemsClass(R.drawable.inspection, "Plan"));
-        featureItems.add(new TutorialItemsClass(R.drawable.toy, "Play"));
-        featureItems.add(new TutorialItemsClass(R.drawable.piggy, "Budget"));
+        featureItems.add(new TutorialItemsClass(R.drawable.positive_dynamic, "Analyse"));
+        featureItems.add(new TutorialItemsClass(R.drawable.goal, "Plan"));
+        featureItems.add(new TutorialItemsClass(R.drawable.pyramid_toy, "Play"));
+        featureItems.add(new TutorialItemsClass(R.drawable.money_box, "Budget"));
 
         pager = findViewById(R.id.pager);
         tabLayout = findViewById(R.id.tutorial_tab_layout);
@@ -61,6 +60,7 @@ public class TutorialActivity extends AppCompatActivity {
             } else {
                 System.out.println("here");
                 Intent start = new Intent(getApplicationContext(), AuthenticationActivity.class);
+                start.putExtra("origin","Tutorial");
                 startActivity(start);
             }
         }));
@@ -126,7 +126,7 @@ class TutorialItemsPagerAdapter extends PagerAdapter {
     @NonNull
     @Override
     public Object instantiateItem(@NonNull ViewGroup container, int position) {
-        View sliderLayout = View.inflate(context, R.layout.tutorial_items_layout, null);
+        View sliderLayout = View.inflate(context, R.layout.layout_tutorial_items, null);
 
         ImageView feature_image = sliderLayout.findViewById(R.id.feature_image);
         TextView caption = sliderLayout.findViewById(R.id.caption);
