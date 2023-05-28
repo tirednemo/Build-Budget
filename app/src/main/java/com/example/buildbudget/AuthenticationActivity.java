@@ -1,6 +1,10 @@
 package com.example.buildbudget;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
 import android.view.Window;
 import android.widget.TextView;
 
@@ -14,11 +18,15 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.tabs.TabLayout;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
 
 public class AuthenticationActivity extends AppCompatActivity {
     ViewPager2 pager;
     TabLayout tabLayout;
     AuthenticationPagerAdapter adapter;
+    public boolean first_time = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +41,7 @@ public class AuthenticationActivity extends AppCompatActivity {
 
         tabLayout.addTab(tabLayout.newTab().setText("Sign up"));
         tabLayout.addTab(tabLayout.newTab().setText("Sign in"));
-        TextView heading = findViewById(R.id.auth_heading);
+        TextView heading = findViewById(R.id.verify_heading);
         if (pager.getCurrentItem() == 0)
             heading.setText("Registration");
         else
@@ -42,6 +50,44 @@ public class AuthenticationActivity extends AppCompatActivity {
         FragmentManager fragmentManager = getSupportFragmentManager();
         adapter = new AuthenticationPagerAdapter(fragmentManager, getLifecycle());
         pager.setAdapter(adapter);
+
+        if (!getIntent().hasExtra("origin")) {
+            tabLayout.getTabAt(1).select();
+            pager.setCurrentItem(1);
+            heading.setText("Login");
+        }
+
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        FirebaseDynamicLinks.getInstance().getDynamicLink(getIntent())
+                .addOnSuccessListener(this, pendingDynamicLinkData -> {
+                    if (pendingDynamicLinkData != null) {
+                        Uri deepLink = pendingDynamicLinkData.getLink();
+                        if (deepLink != null) {
+                            String mode = deepLink.getQueryParameter("mode");
+                            String oobCode = deepLink.getQueryParameter("oobCode");
+
+                            if ("verifyEmail".equals(mode)) {
+                                try {
+                                    mAuth.applyActionCode(oobCode).addOnCompleteListener(task -> {
+                                        if (task.isSuccessful()) {
+                                            first_time = true;
+                                            tabLayout.getTabAt(1).select();
+                                            pager.setCurrentItem(1);
+                                            heading.setText("Login");
+                                        } else {
+                                            // Failed to apply the action code
+                                        }
+                                    });
+                                } catch (Exception e) {
+                                    // Handle any exceptions while applying the action code
+                                }
+                            }
+                        }
+                    }
+                })
+                .addOnFailureListener(this, e -> {
+                    // Handle any error while retrieving the dynamic link
+                });
 
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -69,6 +115,16 @@ public class AuthenticationActivity extends AppCompatActivity {
             }
         });
     }
+
+    public void onBackPressed(View v) {
+        finish();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+    }
 }
 
 class AuthenticationPagerAdapter extends FragmentStateAdapter {
@@ -79,7 +135,7 @@ class AuthenticationPagerAdapter extends FragmentStateAdapter {
     @NonNull
     @Override
     public Fragment createFragment(int position) {
-       if (position == 0)
+        if (position == 0)
             return new SignupTabFragment();
         else
             return new LoginTabFragment();
@@ -89,4 +145,5 @@ class AuthenticationPagerAdapter extends FragmentStateAdapter {
     public int getItemCount() {
         return 2;
     }
+
 }

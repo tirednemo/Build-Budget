@@ -2,10 +2,8 @@ package com.example.buildbudget;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.text.Editable;
@@ -18,14 +16,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
-import com.google.firebase.auth.FirebaseAuthUserCollisionException;
-import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.util.Objects;
@@ -53,7 +46,8 @@ public class LoginTabFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_login_tab, container, false);
 
-        email = v.findViewById(R.id.email);
+
+        email = v.findViewById(R.id.date);
         password = v.findViewById(R.id.password);
         email_status = v.findViewById(R.id.email_invalid);
         password_status = v.findViewById(R.id.password_invalid);
@@ -95,32 +89,33 @@ public class LoginTabFragment extends Fragment {
 //    }
     private void Login(String mail, final String pass) {
         mAuth = FirebaseAuth.getInstance();
-        mAuth.signInWithEmailAndPassword(mail, pass).addOnCompleteListener((Activity) getContext(), new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if (task.isSuccessful()) {
-                    Log.d(TAG, "signInWithEmail:success");
-                    FirebaseUser usr = mAuth.getCurrentUser();
-                    Intent start = new Intent((Activity) getContext(), DashboardActivity.class);
-                    start.putExtra("com.example.buildbudget.user", usr.getUid());
-                    startActivity(start);
-                } else {
-                    try {
-                        Log.w(TAG, "signInWithEmail:failure", task.getException());
-                        throw Objects.requireNonNull(task.getException());
-                    } catch (FirebaseAuthInvalidUserException e) {
-                        password_status.setVisibility(View.GONE);
-                        email_status.setVisibility(View.VISIBLE);
-                        email.setBackgroundColor(getResources().getColor(R.color.Input_Invalid));
-                        email_status.setText("Email doesn't exist");
-                    } catch (FirebaseAuthInvalidCredentialsException e) {
-                        email_status.setVisibility(View.GONE);
-                        password_status.setVisibility(View.VISIBLE);
-                        password.setBackgroundColor(getResources().getColor(R.color.Input_Invalid));
-                        password_status.setText("Wrong credentials");
-                    } catch (Exception e) {
-                        Log.e(TAG, e.getMessage());
-                    }
+        mAuth.signInWithEmailAndPassword(mail, pass).addOnCompleteListener((Activity) getContext(), task -> {
+            if (task.isSuccessful()) {
+                Log.d(TAG, "signInWithEmail:success");
+                AuthenticationActivity xxx = (AuthenticationActivity) getActivity();
+                FirebaseUser user = mAuth.getCurrentUser();
+                Intent start;
+                if (xxx.first_time)
+                    start = new Intent((Activity) getContext(), VerificationActivity.class);
+                else
+                    start = new Intent((Activity) getContext(), DashboardActivity.class);
+                startActivity(start);
+            } else {
+                try {
+                    Log.w(TAG, "signInWithEmail:failure", task.getException());
+                    throw Objects.requireNonNull(task.getException());
+                } catch (FirebaseAuthInvalidUserException e) {
+                    password_status.setVisibility(View.GONE);
+                    email_status.setVisibility(View.VISIBLE);
+                    email.setBackgroundColor(getResources().getColor(R.color.Input_Invalid));
+                    email_status.setText("Email doesn't exist");
+                } catch (FirebaseAuthInvalidCredentialsException e) {
+                    email_status.setVisibility(View.GONE);
+                    password_status.setVisibility(View.VISIBLE);
+                    password.setBackgroundColor(getResources().getColor(R.color.Input_Invalid));
+                    password_status.setText("Wrong credentials");
+                } catch (Exception e) {
+                    Log.e(TAG, e.getMessage());
                 }
             }
         });

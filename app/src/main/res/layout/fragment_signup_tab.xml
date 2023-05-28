@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="25dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="50dp"
         android:layout_marginEnd="25dp"
         android:fontFamily="@font/work_sans_semibold"
         android:labelFor="@id/name"
@@ -26,9 +26,9 @@
         android:layout_marginStart="25dp"
         android:layout_marginTop="5dp"
         android:layout_marginEnd="25dp"
-        android:layout_marginBottom="20dp"
         android:autofillHints=""
-        android:background="@color/Grey"
+        android:background="@drawable/rounded_corners_input"
+        android:backgroundTint="@color/Grey"
         android:ems="10"
         android:fontFamily="@font/work_sans"
         android:hint="Name"
@@ -41,22 +41,24 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="25dp"
+        android:layout_marginTop="20dp"
         android:layout_marginEnd="25dp"
         android:fontFamily="@font/work_sans_semibold"
-        android:labelFor="@id/email"
+        android:labelFor="@id/date"
         android:text="Email"
         android:textColor="@color/Black"
         android:textSize="16sp" />
 
     <EditText
-        android:id="@+id/email"
+        android:id="@+id/date"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:layout_marginStart="25dp"
         android:layout_marginTop="5dp"
         android:layout_marginEnd="25dp"
         android:autofillHints=""
-        android:background="@color/Grey"
+        android:background="@drawable/rounded_corners_input"
+        android:backgroundTint="@color/Grey"
         android:ems="10"
         android:fontFamily="@font/work_sans"
         android:hint="Email"
@@ -70,7 +72,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="25dp"
-        android:layout_marginTop="5dp"
         android:layout_marginEnd="25dp"
         android:fontFamily="@font/work_sans"
         android:textColor="@color/Error"
@@ -97,7 +98,8 @@
         android:layout_marginTop="5dp"
         android:layout_marginEnd="25dp"
         android:autofillHints="password"
-        android:background="@color/Grey"
+        android:background="@drawable/rounded_corners_input"
+        android:backgroundTint="@color/Grey"
         android:ems="10"
         android:fontFamily="@font/work_sans"
         android:hint="Password"
@@ -111,7 +113,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="25dp"
-        android:layout_marginTop="5dp"
         android:layout_marginEnd="25dp"
         android:fontFamily="@font/work_sans"
         android:textColor="@color/Error"
@@ -121,9 +122,8 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="135dp"
-        android:layout_marginTop="30dp"
-        android:layout_marginEnd="135dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="20dp"
         android:fontFamily="@font/work_sans_semibold"
         android:text="or, Continue with"
         android:textSize="16sp" />
@@ -132,25 +132,25 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
-        android:layout_marginBottom="20dp"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:paddingHorizontal="130dp">
 
         <ImageButton
             android:id="@+id/googlesignup"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:layout_marginStart="135dp"
+            android:layout_width="wrap_content"
+            android:layout_height="70dp"
             android:layout_weight="1"
             android:background="@color/White"
+            android:scaleType="fitCenter"
             android:src="@drawable/common_google_signin_btn_icon_dark" />
 
         <ImageButton
-            android:id="@+id/imageButton5"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:layout_marginEnd="135dp"
+            android:id="@+id/fbsignup"
+            android:layout_width="wrap_content"
+            android:layout_height="70dp"
             android:layout_weight="1"
             android:background="@color/White"
+            android:scaleType="fitCenter"
             android:src="@drawable/common_google_signin_btn_icon_dark" />
     </LinearLayout>
 
@@ -159,6 +159,7 @@
         android:layout_width="match_parent"
         android:layout_height="58dp"
         android:layout_marginStart="25dp"
+        android:layout_marginTop="20dp"
         android:layout_marginEnd="25dp"
         android:backgroundTint="@color/Disabled"
         android:enabled="false"
@@ -166,15 +167,8 @@
         android:text="Confirm"
         android:textAllCaps="false"
         android:textColor="@color/White"
-        android:textSize="15sp"
+        android:textSize="18sp"
         app:cornerRadius="20dp" />
-    <com.google.android.gms.common.SignInButton
-        android:id="@+id/bt_sign_in"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp" />
+
+
 </LinearLayout>

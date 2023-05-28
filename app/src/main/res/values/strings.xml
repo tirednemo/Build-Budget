@@ -4,7 +4,7 @@
     <string name="feature_image">Feature Image</string>
     <string name="skip">Skip</string>
     <string name="next">Next</string>
-    <string name="tutorialpager">TutorialPager</string>
+    <string name="tutorial_pager">TutorialPager</string>
     <string name="start">Get started</string>
 
     <string name="open_nav">Open Navigation Drawer</string>
@@ -14,5 +14,34 @@
     <string name="nav_open">Open</string>
     <string name="nav_close">Close</string>
     <string name="your_web_client_id">685332904527-a6clup44irc4d85eirqadt171q0efrki.apps.googleusercontent.com</string>
->>>>>>> 7082dd03cea10249dda87dd7d9a5de3b0d9f5e58
+
+    <string name="caption">Caption</string>
+
+    <string-array name="Banks">
+        <item>AB Bank Ltd.</item>
+        <item>Eastern Bank Ltd.</item>
+        <item>Mutual Trust Bank Ltd</item>
+        <item>Janata Bank Ltd.</item>
+    </string-array>
+
+    <string-array name="Account_types">
+        <item>Cash</item>
+        <item>General</item>
+        <item>Current</item>
+        <item>Savings</item>
+        <item>Debit Card</item>
+        <item>Credit Card</item>
+        <item>Insurance</item>
+    </string-array>
+
+    <string-array name="Currencies">
+        <item>BDT</item>
+        <item>USD</item>
+    </string-array>
+
+    <string-array name="Status">
+        <item>Cleared</item>
+        <item>Due</item>
+        <item>Planned</item>
+    </string-array>
 </resources>

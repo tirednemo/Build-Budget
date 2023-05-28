@@ -2,14 +2,10 @@ package com.example.buildbudget;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.IntentSender;
-import android.content.res.ColorStateList;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 
 import android.text.Editable;
@@ -21,38 +17,24 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.auth.api.identity.BeginSignInRequest;
-import com.google.android.gms.auth.api.identity.BeginSignInResult;
-import com.google.android.gms.auth.api.identity.Identity;
 import com.google.android.gms.auth.api.identity.SignInClient;
-import com.google.android.gms.auth.api.identity.SignInCredential;
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.SignInButton;
-import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.ActionCodeSettings;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Objects;
-import java.util.UUID;
 
 public class SignupTabFragment extends Fragment {
     public static final String TAG = "YOUR-TAG-NAME";
@@ -112,7 +94,7 @@ public class SignupTabFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_signup_tab, container, false);
 
         name = v.findViewById(R.id.name);
-        email = v.findViewById(R.id.email);
+        email = v.findViewById(R.id.date);
         password = v.findViewById(R.id.password);
         email_status = v.findViewById(R.id.email_invalid);
         password_status = v.findViewById(R.id.password_invalid);
@@ -232,14 +214,50 @@ public class SignupTabFragment extends Fragment {
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
                     Log.d(TAG, "createUserWithEmail:success");
-                    mDatabase = FirebaseDatabase.getInstance("https://build-budget-71a7f-default-rtdb.asia-southeast1.firebasedatabase.app/").getReference();
-                    FirebaseUser usr = mAuth.getCurrentUser();
-                    if (usr != null) {
-                        User user = new User(name, mail);
-                        mDatabase.child("users").child(usr.getUid()).setValue(user);
-                        Intent start = new Intent((Activity) getContext(), DashboardActivity.class);
-                        start.putExtra("com.example.buildbudget.user", usr.getUid());
-                        startActivity(start);                    }
+                    FirebaseUser user = mAuth.getCurrentUser();
+
+                    UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                            .setDisplayName(name)
+                            .setPhotoUri(Uri.parse("https://firebasestorage.googleapis.com/v0/b/build-budget-71a7f.appspot.com/o/test%20account.png?alt=media&token=b9cd2260-4aa7-462c-a058-cf30e644f8fb"))
+                            .build();
+
+                    user.updateProfile(profileUpdates)
+                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful()) {
+                                        Log.d(TAG, "User profile updated.");
+                                    }
+                                }
+                            });
+
+                    ActionCodeSettings actionCodeSettings = ActionCodeSettings.newBuilder()
+                            .setUrl("https://buildbudget.page.link/bjYi")
+                            .setHandleCodeInApp(true)
+                            .setAndroidPackageName(
+                                    "com.example.buildbudget",
+                                    true,
+                                    "1")
+                            .setIOSBundleId("com.example.buildbudget")
+                            .build();
+
+                    user.sendEmailVerification(actionCodeSettings)
+                            .addOnCompleteListener(task1 -> {
+                                if (task1.isSuccessful()) {
+                                    Log.d(TAG, "Email sent.");
+
+                            User usr = new User(name, mail);
+
+                            mDatabase = FirebaseDatabase.getInstance("https://build-budget-71a7f-default-rtdb.asia-southeast1.firebasedatabase.app/").getReference();
+                            mDatabase.child("users").child(user.getUid()).setValue(usr);
+
+                            FirebaseAuth.getInstance().signOut();
+                            Intent start = new Intent(getActivity(), VerificationActivity.class);
+                            start.putExtra("com.example.buildbudget.mail", mail);
+                            startActivity(start);
+                            getActivity().finish();
+                        }
+                    });
                 } else {
                     try {
                         Log.w(TAG, "createUserWithEmail:failure", task.getException());

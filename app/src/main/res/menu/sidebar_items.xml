@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group
+        android:id="@+id/basic"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_home"
+            android:title="Home" />
+        <item
+            android:id="@+id/nav_acc"
+            android:title="Account" />
+        <item
+            android:id="@+id/nav_banksync"
+            android:title="Bank Sync" />
+        <item
+            android:id="@+id/nav_stats"
+            android:title="Statistics" />
+    </group>
+
+    <group android:id="@+id/management">
+        <item
+            android:id="@+id/nav_budget"
+            android:title="Budget" />
+        <item
+            android:id="@+id/nav_debts"
+            android:title="Debts" />
+        <item
+            android:id="@+id/nav_ppay"
+            android:title="Planned Payments" />
+        <item
+            android:id="@+id/nav_goals"
+            android:title="Goals" />
+        <item
+            android:id="@+id/nav_invests"
+            android:title="Investments" />
+    </group>
+
+    <group
+        android:id="@+id/exchanges"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_currency_ex"
+            android:title="Currency Exchange" />
+        <item
+            android:id="@+id/nav_stock_ex"
+            android:title="Stock Exchange" />
+    </group>
+
+    <group android:id="@+id/cards">
+        <item
+            android:id="@+id/nav_loyal"
+            android:title="Loyalty Cards" />
+        <item
+            android:id="@+id/nav_warranty"
+            android:title="Warranty Cards" />
+    </group>
+
+    <group
+        android:id="@+id/others"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_settings"
+            android:title="Settings" />
+        <item
+            android:id="@+id/nav_help"
+            android:title="Help" />
+        <item
+            android:id="@+id/nav_logout"
+            android:title="Logout" />
+    </group>
+</menu>
