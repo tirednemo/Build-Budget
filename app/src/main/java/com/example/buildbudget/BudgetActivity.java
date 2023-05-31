@@ -1,5 +1,6 @@
 package com.example.buildbudget;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -8,12 +9,15 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.buildbudget.databinding.ActivityBudgetBinding;
+import com.example.buildbudget.databinding.ActivityTransactionBinding;
+
 public class BudgetActivity extends AppCompatActivity {
     private EditText input1;
     private TextView budg;
     private TextView exp;
     private ImageButton Backbuttonb;
-    private String res;
+    private float res;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,6 +27,8 @@ public class BudgetActivity extends AppCompatActivity {
         exp=(TextView) findViewById(R.id.expenseVal);
       /*  Intent intent = getIntent();
         res=intent.getStringExtra("Expense");*/
+        Intent intent2 = getIntent();
+        res = intent2.getFloatExtra("expenses", 0.0f);
         Backbuttonb= (ImageButton) findViewById(R.id.Backbuttonb);
         Backbuttonb.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -35,8 +41,6 @@ public class BudgetActivity extends AppCompatActivity {
 
     }
 
-
-
     public double getInput(EditText editText)
     {
         if(editText.getText().toString().equals("")) return 0.00;
@@ -46,24 +50,8 @@ public class BudgetActivity extends AppCompatActivity {
     public void budget_set(View view){
         double n1=getInput(input1);
         budg.setText(String.valueOf(n1));
-        exp.setText(res);
+        exp.setText(String.valueOf(res));
         input1.getText().clear();
     }
-    /*for expense value:
-    add the following lines in transaction
-     submitButton = findViewById(R.id.button7);
-
-        String diff=String.valueOf(res);
-        submitButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                Intent intent = new Intent(DebtActivity.this, budgetActivity.class);
-                intent.putExtra("Expense", diff);
-                startActivity(intent);
-            }
-        });
-    }
-     */
 
 }

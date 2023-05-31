@@ -67,7 +67,9 @@ public class TransactionDetailsFragment extends Fragment {
     String category, account_to, account_from, key;
     Double amount;
     private final int PICK_IMAGE_REQUEST = 22;
-    private Double expenses,income;
+
+    private Double expenses=0.0,income=0.0;
+
     public TransactionDetailsFragment() {
         // Required empty public constructor
     }
@@ -93,12 +95,15 @@ public class TransactionDetailsFragment extends Fragment {
             account_from = bundle.getString("account");
             amount = bundle.getDouble("income");
             income=amount;
-        } else if (bundle.containsKey("expense")) {
+        }
+        else if (bundle.containsKey("expense")) {
             key = "expense";
             account_from = bundle.getString("account");
             amount = bundle.getDouble("expense");
             expenses=amount;
-        } else if (bundle.containsKey("transfer")) {
+
+        }
+        else if (bundle.containsKey("transfer")) {
             category = null;
             key = "transfer";
             account_from = bundle.getString("account_from");
@@ -190,6 +195,12 @@ public class TransactionDetailsFragment extends Fragment {
             }
 
             CreateTransaction(finalDate, payee.getText().toString(), note.getText().toString(), status_spinner.getSelectedItem().toString(), "images/" + TxID);
+            Intent intent = new Intent(getContext(), StatisticsActivity.class);
+            intent.putExtra("expenses", expenses);
+            intent.putExtra("income", income);
+            startActivity(intent);
+            Intent intent2 = new Intent(getContext(), BudgetActivity.class);
+            intent.putExtra("expenses", expenses);
 
         });
         return v;
@@ -217,7 +228,6 @@ public class TransactionDetailsFragment extends Fragment {
             mStorage
                     .child("images/" + TxID).putFile(filePath)
                     .addOnSuccessListener(taskSnapshot -> progressDialog.dismiss())
-
                     .addOnFailureListener(e -> progressDialog.dismiss())
                     .addOnProgressListener(taskSnapshot -> {
                         double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount());
@@ -254,11 +264,7 @@ public class TransactionDetailsFragment extends Fragment {
     }
 
 
-    /*private void navigateToStatistics(View view) {
-        Intent intent = new Intent(this, StatisticsActivity.class);
-        intent.putExtra("expenses", expenses);
-        intent.putExtra("income", income);
-        startActivity(intent);
-    }*/
+
+
 
 }

@@ -13,6 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.BuildBudget"
         tools:targetApi="31">
+
         <activity
             android:name=".MainActivity"
             android:exported="true">
@@ -23,16 +24,7 @@
         </activity>
         <activity
             android:name=".TutorialActivity"
-            android:exported="true">
-        </activity>
-        <activity
-            android:name=".DashboardActivity"
-            android:exported="true">
-        </activity>
-        <activity
-            android:name=".BudgetActivity"
-            android:exported="true">
-        </activity>
+            android:exported="true" />
         <activity
             android:name=".AuthenticationActivity"
             android:exported="true">
@@ -47,50 +39,51 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".DebtActivity"
-            android:exported="true">
-        </activity>
-        <activity
-            android:name=".HelpActivity"
-            android:exported="true">
-        </activity>
-        <activity
-            android:name=".StatisticsActivity"
-            android:exported="true">
-        </activity>
-        <activity
             android:name=".VerificationActivity"
-            android:exported="true">
-        </activity>
+            android:exported="true" />
         <activity
-            android:name=".AccountsActivity"
-            android:exported="true">
-        </activity>
-        <activity
-            android:name=".AccountCreationActivity"
-            android:exported="true">
-        </activity>
+            android:name=".DashboardActivity"
+            android:exported="true" />
         <activity
             android:name=".ProfileActivity"
-            android:exported="true">
-        </activity>
+            android:exported="true" />
+
+
+        <activity
+            android:name=".AccountsActivity"
+            android:exported="true" />
+        <activity
+            android:name=".AccountCreationActivity"
+            android:exported="true" />
         <activity
             android:name=".TransactionActivity"
-            android:exported="true">
-        </activity>
+            android:exported="true" />
+
+
+        <activity
+            android:name=".StatisticsActivity"
+            android:exported="true" />
+        <activity
+            android:name=".BudgetActivity"
+            android:exported="true" />
+        <activity
+            android:name=".DebtActivity"
+            android:exported="true" />
+
+
+        <activity
+            android:name=".HelpActivity"
+            android:exported="true" />
         <activity
             android:name=".SettingsActivity"
             android:exported="true"
-            android:theme="@style/PreferenceStyle">
-        </activity>
+            android:theme="@style/PreferenceStyle" />
         <activity
             android:name=".SettingsActivity_Account"
-            android:exported="true">
-        </activity>
+            android:exported="true" />
         <activity
             android:name=".NotificationsActivity"
-            android:exported="true">
-        </activity>
+            android:exported="true" />
 
         <meta-data
             android:name="preloaded_fonts"

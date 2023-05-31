@@ -1,6 +1,7 @@
 package com.example.buildbudget;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,8 +16,12 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.core.util.Pair;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -81,7 +86,7 @@ public class TransactionCategoryFragment extends Fragment {
         List<Pair<String, Integer>> list = new ArrayList<>();
         list.add(new Pair<>("Food & Drinks", R.drawable.dining));
         list.add(new Pair<>("Shopping", R.drawable.shopping_bag));
-        list.add(new Pair<>("Housing", R.drawable.home2));
+        list.add(new Pair<>("Housing", R.drawable.home));
         list.add(new Pair<>("Vehicle", R.drawable.car));
         list.add(new Pair<>("Transport", R.drawable.bus));
         list.add(new Pair<>("Healthcare", R.drawable.doctors_bag));

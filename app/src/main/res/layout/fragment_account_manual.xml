@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/constraintLayout7"
     android:layout_width="match_parent"
     android:layout_height="650dp"
@@ -31,9 +30,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="139dp"
         android:orientation="vertical"
-        app:layout_constraintBottom_toTopOf="@+id/confirm5"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -43,34 +40,8 @@
             android:layout_height="match_parent"
             android:layout_marginTop="15dp">
 
-            <FrameLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="100dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <DatePicker
-                    android:id="@+id/date_picker"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="4"
-                    android:calendarViewShown="true"
-                    android:spinnersShown="false"
-                    android:visibility="gone" />
-
-                <TimePicker
-                    android:id="@+id/time_picker"
-                    android:layout_width="360dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="4"
-                    android:visibility="gone" />
-
-            </FrameLayout>
-
             <TextView
-                android:id="@+id/textView18"
+                android:id="@+id/textView17"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="25dp"
@@ -97,7 +68,7 @@
                 android:textColor="@color/Black"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView18" />
+                app:layout_constraintTop_toBottomOf="@+id/textView17" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -105,7 +76,7 @@
             android:layout_height="match_parent">
 
             <TextView
-                android:id="@+id/textView28"
+                android:id="@+id/textView19"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="25dp"
@@ -131,10 +102,9 @@
                 android:paddingStart="10dp"
                 android:textColor="@color/Black"
                 android:textColorHint="@color/Disabled"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView28" />
+                app:layout_constraintTop_toBottomOf="@+id/textView19" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -142,7 +112,7 @@
             android:layout_height="match_parent">
 
             <TextView
-                android:id="@+id/textView38"
+                android:id="@+id/textView16"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="25dp"
@@ -163,10 +133,9 @@
                 android:layout_marginEnd="20dp"
                 android:autofillHints=""
                 android:paddingStart="10dp"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView38" />
+                app:layout_constraintTop_toBottomOf="@+id/textView16" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -174,7 +143,7 @@
             android:layout_height="match_parent">
 
             <TextView
-                android:id="@+id/textView48"
+                android:id="@+id/textView15"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="25dp"
@@ -195,10 +164,9 @@
                 android:layout_marginEnd="20dp"
                 android:autofillHints=""
                 android:paddingStart="10dp"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView48" />
+                app:layout_constraintTop_toBottomOf="@+id/textView15" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -206,7 +174,7 @@
             android:layout_height="match_parent">
 
             <TextView
-                android:id="@+id/textView58"
+                android:id="@+id/textView8"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="25dp"
@@ -233,10 +201,9 @@
                 android:paddingStart="10dp"
                 android:textColor="@color/Black"
                 android:textColorHint="@color/Disabled"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView58" />
+                app:layout_constraintTop_toBottomOf="@+id/textView8" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </LinearLayout>

@@ -239,6 +239,7 @@ public class DashboardActivity extends AppCompatActivity implements
 //            case R.id.nav_stats:
 //                break;
 //
+
             case R.id.nav_budget:
                start = new Intent(this, BudgetActivity.class);
                 startActivity(start);
@@ -247,6 +248,13 @@ public class DashboardActivity extends AppCompatActivity implements
                 start = new Intent(this, DebtActivity.class);
                 startActivity(start);
                 break;
+
+//            case R.id.nav_budget:
+//                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();
+//                break;
+//            case R.id.nav_debts:
+//                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();
+//                break;
 //            case R.id.nav_ppay:
 //                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();
 //                break;
@@ -275,10 +283,14 @@ public class DashboardActivity extends AppCompatActivity implements
                 start = new Intent(this, SettingsActivity.class);
                 startActivity(start);
                 break;
+
            case R.id.nav_help:
                 start = new Intent(this, HelpActivity.class);
                 startActivity(start);
                 break;
+//            case R.id.nav_help:
+//                break;
+
             case R.id.nav_logout:
                 FirebaseAuth.getInstance().signOut();
                 start = new Intent(this, AuthenticationActivity.class);

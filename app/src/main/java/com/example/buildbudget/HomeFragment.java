@@ -14,5 +14,6 @@ public class HomeFragment extends Fragment {
 
         return inflater.inflate(R.layout.activity_dashboard,container,false);
 
+
     }
 }
