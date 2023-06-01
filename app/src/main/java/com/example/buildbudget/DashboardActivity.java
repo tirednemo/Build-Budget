@@ -279,7 +279,10 @@ public class DashboardActivity extends AppCompatActivity implements
 //            case R.id.nav_warranty:
 //                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();
 //                break;
-
+            case R.id.nav_stats:
+                start = new Intent(this, StatisticsActivity.class);
+                startActivity(start);
+                break;
             case R.id.nav_settings:
                 start = new Intent(this, SettingsActivity.class);
                 startActivity(start);
