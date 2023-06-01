@@ -265,9 +265,10 @@ public class DashboardActivity extends AppCompatActivity implements
 //                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();
 //                break;
 //
-//            case R.id.nav_currency_ex:
-//                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();
-//                break;
+            case R.id.nav_currency_ex:
+                start = new Intent(this, CurrencyExchangeActivity.class);
+                startActivity(start);
+                break;
 //            case R.id.nav_stock_ex:
 //                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();
 //                break;

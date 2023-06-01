@@ -1,5 +1,7 @@
 package com.example.buildbudget;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.ImageButton;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -15,6 +17,7 @@ public class StatisticsActivity extends AppCompatActivity {
 
     private PieChart pieChart;
     private double expenses=0.0, income=0.0;
+    private ImageButton BackButtonS;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +48,14 @@ public class StatisticsActivity extends AppCompatActivity {
 
         pieChart.setData(pieData);
         pieChart.invalidate();
+
+        BackButtonS= (ImageButton) findViewById(R.id.BackButtonS);
+        BackButtonS.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
 
 
 

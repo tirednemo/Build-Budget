@@ -38,4 +38,61 @@
         <item>Due</item>
         <item>Planned</item>
     </string-array>
+
+    <string-array name="currencies">
+        <item>BDT</item>
+        <item>USD</item>
+        <item>EUR</item>
+        <item>INR</item>
+        <item>JPY</item>
+        <item>GBP</item>
+        <item>AUD</item>
+        <item>CAD</item>
+        <item>CHF</item>
+        <item>CNY</item>
+        <item>SEK</item>
+        <item>NZD</item>
+        <item>MXN</item>
+        <item>SGD</item>
+        <item>HKD</item>
+        <item>NOK</item>
+        <item>KRW</item>
+        <item>TWD</item>
+        <item>DKK</item>
+        <item>TRY</item>
+        <item>RUB</item>
+        <item>ZAR</item>
+        <item>BRL</item>
+        <item>PLN</item>
+        <item>THB</item>
+        <item>IDR</item>
+        <item>ISK</item>
+        <item>PHP</item>
+        <item>CZK</item>
+        <item>CLP</item>
+        <item>ILS</item>
+        <item>MYR</item>
+        <item>ARS</item>
+        <item>RON</item>
+        <item>KWD</item>
+        <item>COP</item>
+        <item>EGP</item>
+        <item>AED</item>
+        <item>PEN</item>
+        <item>SAR</item>
+        <item>PKR</item>
+        <item>HUF</item>
+        <item>UAH</item>
+        <item>LKR</item>
+        <item>UYU</item>
+        <item>HRK</item>
+        <item>VND</item>
+        <item>BGN</item>
+        <item>DOP</item>
+        <item>CRC</item>
+        <item>QAR</item>
+    </string-array>
+
+
+
 </resources>
