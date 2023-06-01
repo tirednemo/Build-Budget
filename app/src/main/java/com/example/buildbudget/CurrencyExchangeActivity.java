@@ -144,6 +144,6 @@ public class CurrencyExchangeActivity extends AppCompatActivity implements Adapt
     }
     public void reset(View view) {
         amountEditText.getText().clear();
-        resultTextView.setText(String.valueOf(0.00));
+        resultTextView.setText("");
     }
 }

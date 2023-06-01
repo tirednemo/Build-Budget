@@ -52,7 +52,7 @@
             android:layout_width="172dp"
             android:layout_height="39dp"
             android:hint="Enter amount"
-            android:inputType="numbe.98rDecimal"
+            android:inputType="numberDecimal"
             app:layout_constraintBottom_toTopOf="@+id/buttonConvert"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.497"
