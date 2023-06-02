@@ -31,6 +31,7 @@
         <item>Investments</item>
         <item>Financial Expenses</item>
         <item>Income</item>
+        <item>Transfer</item>
         <item>Others</item>
 
     </string-array>
@@ -47,6 +48,7 @@
         <item>@drawable/profit</item>
         <item>@drawable/tax</item>
         <item>@drawable/cash</item>
+        <item>@drawable/transfer</item>
         <item>@drawable/information</item>
     </integer-array>
 </resources>
