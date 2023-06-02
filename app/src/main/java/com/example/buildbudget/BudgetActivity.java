@@ -9,9 +9,6 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.buildbudget.databinding.ActivityBudgetBinding;
-import com.example.buildbudget.databinding.ActivityTransactionBinding;
-
 public class BudgetActivity extends AppCompatActivity {
     private EditText input1;
     private TextView budg;

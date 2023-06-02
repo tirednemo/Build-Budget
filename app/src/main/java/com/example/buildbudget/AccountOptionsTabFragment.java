@@ -7,9 +7,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import androidx.fragment.app.Fragment;
-import androidx.viewpager2.widget.ViewPager2;
+import androidx.fragment.app.FragmentTransaction;
 
-import com.google.android.material.card.MaterialCardView;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class AccountOptionsTabFragment extends Fragment {
@@ -39,13 +38,16 @@ public class AccountOptionsTabFragment extends Fragment {
 
         add_bank.setOnClickListener(view ->
         {
-            ViewPager2 pager = getActivity().findViewById(R.id.account_creation_pager);
-            pager.setCurrentItem(1, false);
+            FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+            transaction.replace(R.id.account_creation_frame, new BankAccountTabFragment());
+            transaction.addToBackStack(null);
+            transaction.commit();
         });
         add_manual.setOnClickListener(view ->
         {
-            ViewPager2 pager = getActivity().findViewById(R.id.account_creation_pager);
-            pager.setCurrentItem(4, false);
+            FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+            transaction.replace(R.id.account_creation_frame, new ManualAccountTabFragment());
+            transaction.commit();
         });
 
         return v;

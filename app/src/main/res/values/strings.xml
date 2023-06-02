@@ -14,8 +14,10 @@
     <string-array name="Banks">
         <item>AB Bank Ltd.</item>
         <item>Eastern Bank Ltd.</item>
-        <item>Mutual Trust Bank Ltd</item>
-        <item>Janata Bank Ltd.</item>
+    </string-array>
+
+    <string-array name="Wallets">
+        <item>bKash</item>
     </string-array>
 
     <string-array name="Account_types">
@@ -28,18 +30,13 @@
         <item>Insurance</item>
     </string-array>
 
-    <string-array name="Currencies">
-        <item>BDT</item>
-        <item>USD</item>
-    </string-array>
-
     <string-array name="Status">
         <item>Cleared</item>
         <item>Due</item>
         <item>Planned</item>
     </string-array>
 
-    <string-array name="currencies">
+    <string-array name="Currencies">
         <item>BDT</item>
         <item>USD</item>
         <item>EUR</item>
@@ -92,7 +89,5 @@
         <item>CRC</item>
         <item>QAR</item>
     </string-array>
-
-
 
 </resources>

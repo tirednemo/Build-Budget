@@ -15,6 +15,14 @@ public class Transaction {
     public Transaction() {
     }
 
+    public Transaction(String ID, String date, String category, String note, Double amount) {
+        this.TxID = ID;
+        this.Date = date;
+        this.Category = category;
+        this.Note = note;
+        this.Amount = amount;
+    }
+
     public Transaction(String ID, String date, String category, String payee, String note, String status, String invoice, Double amount) {
         this.TxID = ID;
         this.Date = date;
