@@ -74,6 +74,9 @@
         <activity
             android:name=".DebtActivity"
             android:exported="true" />
+        <activity
+            android:name=".AddPlannedPaymentActivity"
+            android:exported="true" />
 
 
         <activity
