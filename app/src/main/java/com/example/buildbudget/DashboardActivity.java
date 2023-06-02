@@ -38,7 +38,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -158,55 +163,74 @@ public class DashboardActivity extends AppCompatActivity implements
 // TODO: Recycler View for accounts and date-ordered records
 
         getAccountCards();
-        List<Records> recordList;
-        recordList = getRecords();
+        getRecords();
 
-
-
-        recordRecyclerView = findViewById(R.id.date_view);
-        recordsRecyclerViewAdapter = new RecordItemsRecycleViewAdapter(recordList, getApplication(), recordItemsOnClickHandler);
-        recordRecyclerView.setAdapter(recordsRecyclerViewAdapter);
-        recordRecyclerView.setLayoutManager(new LinearLayoutManager(DashboardActivity.this, LinearLayoutManager.VERTICAL, false));
     }
 
 
-
     private void getAccountCards() {
-        List<Account> list = new ArrayList<>();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        DatabaseReference mDatabase = FirebaseDatabase.getInstance("https://build-budget-71a7f-default-rtdb.asia-southeast1.firebasedatabase.app/").getReference();
+
+        ValueEventListener accountListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                List<Account> list = new ArrayList<>();
+                for (DataSnapshot accountSnapshot : dataSnapshot.getChildren()) {
+                    Account account = accountSnapshot.getValue(Account.class);
+                    list.add(account);
+                }
+                accountCardRecyclerView = findViewById(R.id.account_cards_view);
+                accountCardsRecyclerViewAdapter = new AccountCardItemsRecycleViewAdapter(list, getApplication(), accountCardItemsOnClickHandler);
+                accountCardRecyclerView.setAdapter(accountCardsRecyclerViewAdapter);
+                accountCardRecyclerView.setLayoutManager(new LinearLayoutManager(DashboardActivity.this, LinearLayoutManager.HORIZONTAL, false));
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        };
+
+        mDatabase.child("users").child(user.getUid()).child("accounts").addValueEventListener(accountListener);
+    }
+
+    private void getRecords() {
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         DatabaseReference mDatabase = FirebaseDatabase.getInstance("https://build-budget-71a7f-default-rtdb.asia-southeast1.firebasedatabase.app/").getReference();
 
-        mDatabase.child("users").child(user.getUid()).child("accounts")
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        for (DataSnapshot accountSnapshot : dataSnapshot.getChildren()) {
-                            Account account = accountSnapshot.getValue(Account.class);
-                            list.add(account);
+        ValueEventListener recordListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                List<Transaction> list = new ArrayList<>();
+                for (DataSnapshot accountSnapshot : dataSnapshot.getChildren()) {
+                    if (accountSnapshot.hasChild("Transaction")) {
+                        DataSnapshot transactionSnapshot = accountSnapshot.child("Transaction");
+                        for (DataSnapshot recordSnapshot : transactionSnapshot.getChildren()) {
+                            Transaction record = recordSnapshot.getValue(Transaction.class);
+                            record.Account = accountSnapshot.getKey();
+                            list.add(record);
                         }
-                        accountCardRecyclerView = findViewById(R.id.account_cards_view);
-                        accountCardsRecyclerViewAdapter = new AccountCardItemsRecycleViewAdapter(list, getApplication(), accountCardItemsOnClickHandler);
-                        accountCardRecyclerView.setAdapter(accountCardsRecyclerViewAdapter);
-                        accountCardRecyclerView.setLayoutManager(new LinearLayoutManager(DashboardActivity.this, LinearLayoutManager.HORIZONTAL, false));
                     }
+                }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-                    }
+                list.sort((t1, t2) -> {
+                    if (t1.Date == null || t2.Date == null)
+                        return 0;
+                    return t2.Date.compareTo(t1.Date);
                 });
-    }
 
-    // Sample data for records
-    private List<Records> getRecords() {
-        List<Records> list = new ArrayList<>();
-        list.add(new Records("Expense", "bKash", "Chicken chaap & naan", 160.0));
-        list.add(new Records("Expense", "Cash", "Bus", 40.0));
-        list.add(new Records("Expense", "card1", "Tesla Model 3", 42990.0));
-        list.add(new Records("Expense", "card1", "Surface Pro 8", 799.0));
-        list.add(new Records("Expense", "bKash", "Cadbury Silk", 150.0));
-        list.add(new Records("Expense", "Cash", "Coffee", 20.0));
-        return list;
+                recordRecyclerView = findViewById(R.id.date_view);
+                recordsRecyclerViewAdapter = new RecordItemsRecycleViewAdapter(list, getApplication(), recordItemsOnClickHandler);
+                recordRecyclerView.setAdapter(recordsRecyclerViewAdapter);
+                recordRecyclerView.setLayoutManager(new LinearLayoutManager(DashboardActivity.this, LinearLayoutManager.VERTICAL, false));
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        };
+        mDatabase.child("users").child(user.getUid()).child("accounts").addValueEventListener(recordListener);
     }
 
 
@@ -241,10 +265,10 @@ public class DashboardActivity extends AppCompatActivity implements
 //
 
             case R.id.nav_budget:
-               start = new Intent(this, BudgetActivity.class);
+                start = new Intent(this, BudgetActivity.class);
                 startActivity(start);
                 break;
-           case R.id.nav_debts:
+            case R.id.nav_debts:
                 start = new Intent(this, DebtActivity.class);
                 startActivity(start);
                 break;
@@ -288,7 +312,7 @@ public class DashboardActivity extends AppCompatActivity implements
                 startActivity(start);
                 break;
 
-           case R.id.nav_help:
+            case R.id.nav_help:
                 start = new Intent(this, HelpActivity.class);
                 startActivity(start);
                 break;
@@ -327,7 +351,7 @@ class AccountCardViewHolder extends RecyclerView.ViewHolder {
         title_back = itemView.findViewById(R.id.card_title_back);
         provider_back = itemView.findViewById(R.id.card_provider_back);
         number = itemView.findViewById(R.id.card_number_back);
-        expireson= itemView.findViewById(R.id.expires_on);
+        expireson = itemView.findViewById(R.id.expires_on);
         expiry = itemView.findViewById(R.id.card_expiry_back);
         cvv_heading = itemView.findViewById(R.id.cvv);
         cvv = itemView.findViewById(R.id.card_cvv_back);
@@ -366,7 +390,7 @@ class AccountCardItemsRecycleViewAdapter extends RecyclerView.Adapter<AccountCar
         viewHolder.title_back.setText(account.Title);
         viewHolder.balance.setText(String.valueOf(account.Balance));
         viewHolder.number.setText(account.Number);
-        if (Objects.equals(account.Type, "Debit Card") || Objects.equals(account.Type, "Credit Card")){
+        if (Objects.equals(account.Type, "Debit Card") || Objects.equals(account.Type, "Credit Card")) {
             viewHolder.holder.setText(account.Holder);
             viewHolder.provider_front.setText(account.Provider);
             viewHolder.provider_back.setText(account.Provider);
@@ -374,8 +398,8 @@ class AccountCardItemsRecycleViewAdapter extends RecyclerView.Adapter<AccountCar
             viewHolder.expireson.setText("EXPIRES ON");
             viewHolder.expiry.setText(account.Validity);
             viewHolder.cvv_heading.setText("CVV");
-            viewHolder.cvv.setText("***");}
-        else{
+            viewHolder.cvv.setText("***");
+        } else {
             viewHolder.holder.setText("");
             viewHolder.provider_front.setText("");
             viewHolder.provider_back.setText("");
@@ -452,11 +476,11 @@ class RecordItemsRecycleViewAdapter extends RecyclerView.Adapter<RecordViewHolde
         void onClick(int index);
     }
 
-    List<Records> list;
+    List<Transaction> list;
     Context context;
     RecordItemsOnClickHandler clickHandler;
 
-    public RecordItemsRecycleViewAdapter(List<Records> list, Context context, RecordItemsOnClickHandler clickHandler) {
+    public RecordItemsRecycleViewAdapter(List<Transaction> list, Context context, RecordItemsOnClickHandler clickHandler) {
         this.list = list;
         this.context = context;
         this.clickHandler = clickHandler;
@@ -474,10 +498,10 @@ class RecordItemsRecycleViewAdapter extends RecyclerView.Adapter<RecordViewHolde
     public void onBindViewHolder(@NonNull RecordViewHolder viewHolder, int position) {
         final int index = viewHolder.getAdapterPosition();
 
-        Records record = list.get(position);
-        viewHolder.title.setText(record.title);
-        viewHolder.account.setText(record.account);
-        viewHolder.amount.setText(String.valueOf(record.amount));
+        Transaction record = list.get(position);
+        viewHolder.title.setText(record.Note);
+        viewHolder.account.setText(record.Account);
+        viewHolder.amount.setText(String.valueOf(record.Amount));
 
         viewHolder.itemView.setOnClickListener(v -> clickHandler.onClick(index));
     }
