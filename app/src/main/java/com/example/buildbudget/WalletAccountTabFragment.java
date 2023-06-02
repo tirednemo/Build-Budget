@@ -1,15 +1,13 @@
 package com.example.buildbudget;
 
+import android.Manifest;
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.Manifest;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,8 +20,6 @@ import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
@@ -36,21 +32,18 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
-import java.util.Objects;
 import java.util.UUID;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-public class BankAccountTabFragment extends Fragment implements AdapterView.OnItemSelectedListener {
+public class WalletAccountTabFragment extends Fragment implements AdapterView.OnItemSelectedListener {
     public static final String TAG = "YOUR-TAG-NAME";
     private static final int PERMISSION_REQUEST_READ_SMS = 1;
     private FirebaseAuth mAuth;
-    EditText account_name, account_no;
-    Spinner bank_name_spinner, account_type_spinner;
+    EditText account_name;
+    Spinner wallet_name_spinner;
     Button confirm;
     Account account;
 
-    public BankAccountTabFragment() {
+    public WalletAccountTabFragment() {
         // Required empty public constructor
     }
 
@@ -61,42 +54,32 @@ public class BankAccountTabFragment extends Fragment implements AdapterView.OnIt
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_account_bank, container, false);
+        View v = inflater.inflate(R.layout.fragment_account_wallet, container, false);
 
-        bank_name_spinner = v.findViewById(R.id.bank_spinner);
+        wallet_name_spinner = v.findViewById(R.id.wallet_spinner);
         ArrayAdapter<CharSequence> adapter1 = ArrayAdapter.createFromResource(getContext(),
-                R.array.Banks, android.R.layout.simple_spinner_item);
+                R.array.Wallets, android.R.layout.simple_spinner_item);
         adapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        bank_name_spinner.setAdapter(adapter1);
-        account_name = v.findViewById(R.id.bank_account_name);
-        account_no = v.findViewById(R.id.bank_account_no);
-        account_type_spinner = v.findViewById(R.id.bank_account_type);
-        ArrayAdapter<CharSequence> adapter2 = ArrayAdapter.createFromResource(getContext(),
-                R.array.Account_types, android.R.layout.simple_spinner_item);
-        adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        account_type_spinner.setAdapter(adapter2);
-        confirm = v.findViewById(R.id.confirm7);
+        wallet_name_spinner.setAdapter(adapter1);
+        account_name = v.findViewById(R.id.wallet_account_name);
+        confirm = v.findViewById(R.id.confirm8);
 
-        account_no.addTextChangedListener(new TextWatcher() {
+        account_name.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (!bank_name_spinner.getSelectedItem().toString().isEmpty() &&
-                        !account_name.getText().toString().isEmpty() &&
-                        !account_no.getText().toString().isEmpty() &&
-                        !account_type_spinner.getSelectedItem().toString().isEmpty()) {
+                if (!wallet_name_spinner.getSelectedItem().toString().isEmpty() &&
+                        !account_name.getText().toString().isEmpty()) {
 
                     confirm.setEnabled(true);
                     confirm.setBackgroundColor(getResources().getColor(R.color.Black));
                     confirm.setOnClickListener(view ->
                     {
-                        account = new Account(account_type_spinner.getSelectedItem().toString(),
-                                account_name.getText().toString(),
-                                account_no.getText().toString(), "BDT", 0.00);
-                        account.Provider = bank_name_spinner.getSelectedItem().toString();
+                        account = new Account("General", account_name.getText().toString(), 0.00);
+                        account.Provider = wallet_name_spinner.getSelectedItem().toString();
                         CreateAccount();
                     });
                 }
@@ -125,7 +108,7 @@ public class BankAccountTabFragment extends Fragment implements AdapterView.OnIt
         } else if (shouldShowRequestPermissionRationale(Manifest.permission.READ_SMS)) {
             AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
             builder.setTitle("Permission Required")
-                    .setMessage("This app requires access to your SMS messages in order to sync your bank transactions.")
+                    .setMessage("This app requires access to your SMS messages in order to sync your mobile wallet transactions.")
                     .setPositiveButton("Grant Permission", (dialog, which) -> {
                         requestPermissionLauncher.launch(Manifest.permission.READ_SMS);
                     })
@@ -153,12 +136,8 @@ public class BankAccountTabFragment extends Fragment implements AdapterView.OnIt
         String selection = "address = ?";
         String[] selectionArgs;
         switch (account.Provider) {
-            case "AB Bank Ltd.": {
-                selectionArgs = new String[]{"ABBANK"};
-                break;
-            }
-            case "Eastern Bank Ltd.": {
-                selectionArgs = new String[]{"EBL."};
+            case "bKash": {
+                selectionArgs = new String[]{"bKash"};
                 break;
             }
             default: {
@@ -195,12 +174,8 @@ public class BankAccountTabFragment extends Fragment implements AdapterView.OnIt
         String selection = "address = ?";
         String[] selectionArgs;
         switch (account.Provider) {
-            case "AB Bank Ltd.": {
-                selectionArgs = new String[]{"ABBANK"};
-                break;
-            }
-            case "Eastern Bank Ltd.": {
-                selectionArgs = new String[]{"EBL."};
+            case "bKash": {
+                selectionArgs = new String[]{"bKash"};
                 break;
             }
             default: {
@@ -255,7 +230,7 @@ public class BankAccountTabFragment extends Fragment implements AdapterView.OnIt
     }
 
     private String parseTransactionDate(String body) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMM-yy hh:mm:ss", Locale.ENGLISH);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm");
         SimpleDateFormat desiredFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm Z");
 
         String[] words = body.split(" ");
@@ -288,12 +263,9 @@ public class BankAccountTabFragment extends Fragment implements AdapterView.OnIt
         String[] words = body.split(" ");
         String amountString = "0.0";
         for (int i = 0; i < words.length; i++) {
-            if (words[i].equalsIgnoreCase("debited") || words[i].equalsIgnoreCase("credited")) {
-                if (words[i + 1].equalsIgnoreCase("with")) {
-                    amountString = words[i + 3].replaceAll("[^0-9.]", "");
-                    break;
-                } else if (words[i + 1].equalsIgnoreCase("from") || words[i + 1].equalsIgnoreCase("to")) {
-                    amountString = words[i - 1].replaceAll("[^0-9.]", "");
+            if (words[i].equalsIgnoreCase("tk")) {
+                if (words[i + 2].equalsIgnoreCase("from") || words[i + 2].equalsIgnoreCase("to")) {
+                    amountString = words[i + 1].replaceAll("[^0-9.]", "");
                     break;
                 }
             }

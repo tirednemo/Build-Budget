@@ -66,7 +66,7 @@ public class DashboardActivity extends AppCompatActivity implements
     FloatingActionButton mAddRecord, mAddOCR, mAddManual;
     TextView addText, OCRText, manualText;
     Boolean isAllFABsVisible;
-RecyclerView background;
+    RecyclerView background;
     RecyclerView accountCardRecyclerView, recordRecyclerView;
     AccountCardItemsRecycleViewAdapter accountCardsRecyclerViewAdapter;
     AccountCardItemsRecycleViewAdapter.AccountCardItemsOnClickHandler accountCardItemsOnClickHandler;
@@ -179,7 +179,7 @@ RecyclerView background;
 // TODO: Recycler View for accounts and date-ordered records
 
         background = findViewById(R.id.account_cards_view);
-        background.setOnClickListener(view->{
+        background.setOnClickListener(view -> {
             Intent intent = getIntent();
             finish();
             startActivity(intent);
@@ -233,7 +233,6 @@ RecyclerView background;
                             Transaction record = recordSnapshot.getValue(Transaction.class);
                             record.Account = accountSnapshot.getKey();
                             record.Icon = categoryMap.get(record.Category);
-                            Log.d("tar", String.valueOf(target));
                             if (Objects.equals(target, "All")) {
                                 list.add(record);
                             } else {
@@ -280,7 +279,6 @@ RecyclerView background;
 
                 recordsRecyclerViewAdapter = new RecordItemsRecycleViewAdapter(list, DashboardActivity.this, recordItemsOnClickHandler);
 
-                //Add your adapter to the sectionAdapter
                 SectionedRecordsRecyclerViewAdapter.Section[] dummy = new SectionedRecordsRecyclerViewAdapter.Section[sections.size()];
                 SectionedRecordsRecyclerViewAdapter mSectionedAdapter = new
                         SectionedRecordsRecyclerViewAdapter(getApplication(), recordsRecyclerViewAdapter);
@@ -332,9 +330,11 @@ RecyclerView background;
                 break;
 //            case R.id.nav_banksync:
 //                break;
-//            case R.id.nav_stats:
-//                break;
-//
+            case R.id.nav_stats:
+                start = new Intent(this, StatisticsActivity.class);
+                startActivity(start);
+                break;
+
 
             case R.id.nav_budget:
                 start = new Intent(this, BudgetActivity.class);
@@ -344,16 +344,10 @@ RecyclerView background;
                 start = new Intent(this, DebtActivity.class);
                 startActivity(start);
                 break;
-
-//            case R.id.nav_budget:
-//                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();
-//                break;
-//            case R.id.nav_debts:
-//                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();
-//                break;
-//            case R.id.nav_ppay:
-//                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();
-//                break;
+            case R.id.nav_ppay:
+                start = new Intent(this, AddPlannedPaymentActivity.class);
+                startActivity(start);
+                break;
 //            case R.id.nav_goals:
 //                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();
 //                break;
@@ -375,10 +369,7 @@ RecyclerView background;
 //            case R.id.nav_warranty:
 //                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();
 //                break;
-            case R.id.nav_stats:
-                start = new Intent(this, StatisticsActivity.class);
-                startActivity(start);
-                break;
+
             case R.id.nav_settings:
                 start = new Intent(this, SettingsActivity.class);
                 startActivity(start);
@@ -388,8 +379,6 @@ RecyclerView background;
                 start = new Intent(this, HelpActivity.class);
                 startActivity(start);
                 break;
-//            case R.id.nav_help:
-//                break;
 
             case R.id.nav_logout:
                 FirebaseAuth.getInstance().signOut();

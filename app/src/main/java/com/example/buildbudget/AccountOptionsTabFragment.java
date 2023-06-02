@@ -43,6 +43,12 @@ public class AccountOptionsTabFragment extends Fragment {
             transaction.addToBackStack(null);
             transaction.commit();
         });
+        add_bkash.setOnClickListener(view ->
+        {
+            FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+            transaction.replace(R.id.account_creation_frame, new WalletAccountTabFragment());
+            transaction.commit();
+        });
         add_manual.setOnClickListener(view ->
         {
             FragmentTransaction transaction = getParentFragmentManager().beginTransaction();

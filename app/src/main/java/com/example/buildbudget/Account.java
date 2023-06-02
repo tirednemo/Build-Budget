@@ -21,6 +21,7 @@ public class Account {
         this.Title = title;
         this.Balance = balance;
     }
+
     public Account(String type, String title, String number, String currency, Double balance) {
         this.Type = type;
         this.Title = title;
