@@ -6,6 +6,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,6 +23,7 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
+import androidx.core.util.Pair;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -44,6 +46,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
@@ -66,6 +69,7 @@ public class DashboardActivity extends AppCompatActivity implements
     FirebaseAuth mAuth;
     DatabaseReference mDatabase;
     FirebaseUser currentUser;
+    HashMap<String, Integer> categoryMap = new HashMap<>();;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -162,6 +166,7 @@ public class DashboardActivity extends AppCompatActivity implements
 
 // TODO: Recycler View for accounts and date-ordered records
 
+        getCategories();
         getAccountCards();
         getRecords();
 
@@ -209,6 +214,7 @@ public class DashboardActivity extends AppCompatActivity implements
                         for (DataSnapshot recordSnapshot : transactionSnapshot.getChildren()) {
                             Transaction record = recordSnapshot.getValue(Transaction.class);
                             record.Account = accountSnapshot.getKey();
+                            record.Icon = categoryMap.get(record.Category);
                             list.add(record);
                         }
                     }
@@ -231,6 +237,15 @@ public class DashboardActivity extends AppCompatActivity implements
             }
         };
         mDatabase.child("users").child(user.getUid()).child("accounts").addValueEventListener(recordListener);
+    }
+
+    void getCategories() {
+        String[] names = getResources().getStringArray(R.array.category_names);
+        TypedArray icons = getResources().obtainTypedArray(R.array.category_icons);
+
+        for (int i = 0; i < names.length; i++) {
+            categoryMap.put(names[i], icons.getResourceId(i, 0));
+        }
     }
 
 
@@ -461,6 +476,7 @@ class AccountCardItemsRecycleViewAdapter extends RecyclerView.Adapter<AccountCar
 
 class RecordViewHolder extends RecyclerView.ViewHolder {
     TextView title, account, amount;
+    ImageView icon;
 
     RecordViewHolder(View itemView) {
         super(itemView);
@@ -468,6 +484,7 @@ class RecordViewHolder extends RecyclerView.ViewHolder {
         title = itemView.findViewById(R.id.add_account);
         account = itemView.findViewById(R.id.textView3);
         amount = itemView.findViewById(R.id.textView4);
+        icon = itemView.findViewById(R.id.recordIcon);
     }
 }
 
@@ -502,6 +519,7 @@ class RecordItemsRecycleViewAdapter extends RecyclerView.Adapter<RecordViewHolde
         viewHolder.title.setText(record.Note);
         viewHolder.account.setText(record.Account);
         viewHolder.amount.setText(String.valueOf(record.Amount));
+        viewHolder.icon.setImageResource(record.Icon);
 
         viewHolder.itemView.setOnClickListener(v -> clickHandler.onClick(index));
     }

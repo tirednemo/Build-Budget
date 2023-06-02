@@ -1,7 +1,7 @@
 package com.example.buildbudget;
 
 import android.content.Context;
-import android.content.Intent;
+import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,12 +16,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.core.util.Pair;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -84,19 +80,12 @@ public class TransactionCategoryFragment extends Fragment {
 
     private List<Pair<String, Integer>> getCategories() {
         List<Pair<String, Integer>> list = new ArrayList<>();
-        list.add(new Pair<>("Food & Drinks", R.drawable.dining));
-        list.add(new Pair<>("Shopping", R.drawable.shopping_bag));
-        list.add(new Pair<>("Housing", R.drawable.home));
-        list.add(new Pair<>("Vehicle", R.drawable.car));
-        list.add(new Pair<>("Transport", R.drawable.bus));
-        list.add(new Pair<>("Healthcare", R.drawable.doctors_bag));
-        list.add(new Pair<>("Education & Development", R.drawable.teaching));
-        list.add(new Pair<>("Communication", R.drawable.ringing_phone));
-        list.add(new Pair<>("Life & Entertainment", R.drawable.movie_projector));
-        list.add(new Pair<>("Investments", R.drawable.profit));
-        list.add(new Pair<>("Financial Expenses", R.drawable.tax));
-        list.add(new Pair<>("Income", R.drawable.cash));
-        list.add(new Pair<>("Others", R.drawable.information));
+        String[] names = getResources().getStringArray(R.array.category_names);
+        TypedArray icons = getResources().obtainTypedArray(R.array.category_icons);
+
+        for (int i = 0; i < names.length; i++) {
+            list.add(new Pair<String, Integer>(names[i], icons.getResourceId(i, 0)));
+        }
         return list;
     }
 }
@@ -108,7 +97,7 @@ class CategoryViewHolder extends RecyclerView.ViewHolder {
     CategoryViewHolder(View itemView) {
         super(itemView);
         name = itemView.findViewById(R.id.add_account);
-        icon = itemView.findViewById(R.id.imageView);
+        icon = itemView.findViewById(R.id.recordIcon);
     }
 }
 

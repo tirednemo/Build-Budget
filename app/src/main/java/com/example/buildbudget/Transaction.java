@@ -6,6 +6,7 @@ public class Transaction {
     public String Payee;
     public String Date;
     public String Category;
+    public Integer Icon;
     public String Account;
     public String Note;
     public String Status;

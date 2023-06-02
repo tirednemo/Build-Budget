@@ -73,7 +73,6 @@ public class TransactionDetailsFragment extends Fragment {
             account_from = bundle.getString("account");
             amount = bundle.getDouble("expense");
         } else if (bundle.containsKey("transfer")) {
-            category = null;
             key = "transfer";
             account_from = bundle.getString("account_from");
             account_to = bundle.getString("account_to");
