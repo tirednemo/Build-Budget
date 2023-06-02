@@ -6,8 +6,10 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,7 +23,11 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.cardview.widget.CardView;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.core.content.ContextCompat;
+import androidx.core.util.Pair;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -38,8 +44,17 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 public class DashboardActivity extends AppCompatActivity implements
@@ -47,11 +62,11 @@ public class DashboardActivity extends AppCompatActivity implements
 
     DrawerLayout mDrawer;
     ImageView mNotification;
-
+    String account_name;
     FloatingActionButton mAddRecord, mAddOCR, mAddManual;
     TextView addText, OCRText, manualText;
     Boolean isAllFABsVisible;
-
+RecyclerView background;
     RecyclerView accountCardRecyclerView, recordRecyclerView;
     AccountCardItemsRecycleViewAdapter accountCardsRecyclerViewAdapter;
     AccountCardItemsRecycleViewAdapter.AccountCardItemsOnClickHandler accountCardItemsOnClickHandler;
@@ -61,6 +76,8 @@ public class DashboardActivity extends AppCompatActivity implements
     FirebaseAuth mAuth;
     DatabaseReference mDatabase;
     FirebaseUser currentUser;
+    HashMap<String, Integer> categoryMap = new HashMap<>();
+    ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +90,10 @@ public class DashboardActivity extends AppCompatActivity implements
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
 
+        if (getIntent().hasExtra("Account")) {
+            account_name = getIntent().getExtras().getString("Account");
+        } else
+            account_name = "All";
 
 // TODO: Navigation Drawer for sidebar
 
@@ -157,56 +178,131 @@ public class DashboardActivity extends AppCompatActivity implements
 
 // TODO: Recycler View for accounts and date-ordered records
 
+        background = findViewById(R.id.account_cards_view);
+        background.setOnClickListener(view->{
+            Intent intent = getIntent();
+            finish();
+            startActivity(intent);
+        });
+        getCategories();
         getAccountCards();
-        List<Records> recordList;
-        recordList = getRecords();
+        getRecords(account_name);
 
-
-
-        recordRecyclerView = findViewById(R.id.date_view);
-        recordsRecyclerViewAdapter = new RecordItemsRecycleViewAdapter(recordList, getApplication(), recordItemsOnClickHandler);
-        recordRecyclerView.setAdapter(recordsRecyclerViewAdapter);
-        recordRecyclerView.setLayoutManager(new LinearLayoutManager(DashboardActivity.this, LinearLayoutManager.VERTICAL, false));
     }
 
 
-
     private void getAccountCards() {
-        List<Account> list = new ArrayList<>();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        DatabaseReference mDatabase = FirebaseDatabase.getInstance("https://build-budget-71a7f-default-rtdb.asia-southeast1.firebasedatabase.app/").getReference();
+
+        ValueEventListener accountListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                List<Account> list = new ArrayList<>();
+                for (DataSnapshot accountSnapshot : dataSnapshot.getChildren()) {
+                    Account account = accountSnapshot.getValue(Account.class);
+                    list.add(account);
+                }
+                accountCardRecyclerView = findViewById(R.id.account_cards_view);
+                accountCardsRecyclerViewAdapter = new AccountCardItemsRecycleViewAdapter(list, DashboardActivity.this, accountCardItemsOnClickHandler);
+                accountCardRecyclerView.setAdapter(accountCardsRecyclerViewAdapter);
+                accountCardRecyclerView.setLayoutManager(new LinearLayoutManager(DashboardActivity.this, LinearLayoutManager.HORIZONTAL, false));
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        };
+
+        mDatabase.child("users").child(user.getUid()).child("accounts").addValueEventListener(accountListener);
+    }
+
+    private void getRecords(String target) {
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         DatabaseReference mDatabase = FirebaseDatabase.getInstance("https://build-budget-71a7f-default-rtdb.asia-southeast1.firebasedatabase.app/").getReference();
 
-        mDatabase.child("users").child(user.getUid()).child("accounts")
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        for (DataSnapshot accountSnapshot : dataSnapshot.getChildren()) {
-                            Account account = accountSnapshot.getValue(Account.class);
-                            list.add(account);
+        ValueEventListener recordListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                List<Transaction> list = new ArrayList<>();
+                for (DataSnapshot accountSnapshot : dataSnapshot.getChildren()) {
+                    if (accountSnapshot.hasChild("Transaction")) {
+                        DataSnapshot transactionSnapshot = accountSnapshot.child("Transaction");
+                        for (DataSnapshot recordSnapshot : transactionSnapshot.getChildren()) {
+                            Transaction record = recordSnapshot.getValue(Transaction.class);
+                            record.Account = accountSnapshot.getKey();
+                            record.Icon = categoryMap.get(record.Category);
+                            Log.d("tar", String.valueOf(target));
+                            if (Objects.equals(target, "All")) {
+                                list.add(record);
+                            } else {
+                                if (Objects.equals(record.Account, target)) {
+                                    list.add(record);
+                                }
+                            }
                         }
-                        accountCardRecyclerView = findViewById(R.id.account_cards_view);
-                        accountCardsRecyclerViewAdapter = new AccountCardItemsRecycleViewAdapter(list, getApplication(), accountCardItemsOnClickHandler);
-                        accountCardRecyclerView.setAdapter(accountCardsRecyclerViewAdapter);
-                        accountCardRecyclerView.setLayoutManager(new LinearLayoutManager(DashboardActivity.this, LinearLayoutManager.HORIZONTAL, false));
                     }
+                }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-                    }
+                list.sort((t1, t2) -> {
+                    if (t1.Date == null || t2.Date == null)
+                        return 0;
+                    return t2.Date.compareTo(t1.Date);
                 });
+
+                Map<String, List<Transaction>> transactionsByDate = new LinkedHashMap<>();
+                for (Transaction transaction : list) {
+                    String date = transaction.Date.split(" ")[0]; // Extract the date from the full date-time string
+                    if (transactionsByDate.containsKey(date)) {
+                        transactionsByDate.get(date).add(transaction);
+                    } else {
+                        List<Transaction> transactions = new ArrayList<>();
+                        transactions.add(transaction);
+                        transactionsByDate.put(date, transactions);
+                    }
+                }
+
+                int i = 0;
+                List<SectionedRecordsRecyclerViewAdapter.Section> sections =
+                        new ArrayList<SectionedRecordsRecyclerViewAdapter.Section>();
+                for (Map.Entry<String, List<Transaction>> entry : transactionsByDate.entrySet()) {
+                    String date = entry.getKey();
+                    List<Transaction> transactions = entry.getValue();
+                    int transactionCount = transactions.size();
+                    sections.add(new SectionedRecordsRecyclerViewAdapter.Section(i, date));
+                    i += transactionCount;
+                }
+
+                recordRecyclerView = findViewById(R.id.date_view);
+                recordRecyclerView.setHasFixedSize(true);
+                recordRecyclerView.setLayoutManager(new LinearLayoutManager(DashboardActivity.this, LinearLayoutManager.VERTICAL, false));
+
+                recordsRecyclerViewAdapter = new RecordItemsRecycleViewAdapter(list, DashboardActivity.this, recordItemsOnClickHandler);
+
+                //Add your adapter to the sectionAdapter
+                SectionedRecordsRecyclerViewAdapter.Section[] dummy = new SectionedRecordsRecyclerViewAdapter.Section[sections.size()];
+                SectionedRecordsRecyclerViewAdapter mSectionedAdapter = new
+                        SectionedRecordsRecyclerViewAdapter(getApplication(), recordsRecyclerViewAdapter);
+                mSectionedAdapter.setSections(sections.toArray(dummy));
+
+                recordRecyclerView.setAdapter(mSectionedAdapter);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        };
+        mDatabase.child("users").child(user.getUid()).child("accounts").addValueEventListener(recordListener);
     }
 
-    // Sample data for records
-    private List<Records> getRecords() {
-        List<Records> list = new ArrayList<>();
-        list.add(new Records("Expense", "bKash", "Chicken chaap & naan", 160.0));
-        list.add(new Records("Expense", "Cash", "Bus", 40.0));
-        list.add(new Records("Expense", "card1", "Tesla Model 3", 42990.0));
-        list.add(new Records("Expense", "card1", "Surface Pro 8", 799.0));
-        list.add(new Records("Expense", "bKash", "Cadbury Silk", 150.0));
-        list.add(new Records("Expense", "Cash", "Coffee", 20.0));
-        return list;
+    void getCategories() {
+        String[] names = getResources().getStringArray(R.array.category_names);
+        TypedArray icons = getResources().obtainTypedArray(R.array.category_icons);
+
+        for (int i = 0; i < names.length; i++) {
+            categoryMap.put(names[i], icons.getResourceId(i, 0));
+        }
     }
 
 
@@ -241,10 +337,10 @@ public class DashboardActivity extends AppCompatActivity implements
 //
 
             case R.id.nav_budget:
-               start = new Intent(this, BudgetActivity.class);
+                start = new Intent(this, BudgetActivity.class);
                 startActivity(start);
                 break;
-           case R.id.nav_debts:
+            case R.id.nav_debts:
                 start = new Intent(this, DebtActivity.class);
                 startActivity(start);
                 break;
@@ -288,7 +384,7 @@ public class DashboardActivity extends AppCompatActivity implements
                 startActivity(start);
                 break;
 
-           case R.id.nav_help:
+            case R.id.nav_help:
                 start = new Intent(this, HelpActivity.class);
                 startActivity(start);
                 break;
@@ -327,7 +423,7 @@ class AccountCardViewHolder extends RecyclerView.ViewHolder {
         title_back = itemView.findViewById(R.id.card_title_back);
         provider_back = itemView.findViewById(R.id.card_provider_back);
         number = itemView.findViewById(R.id.card_number_back);
-        expireson= itemView.findViewById(R.id.expires_on);
+        expireson = itemView.findViewById(R.id.expires_on);
         expiry = itemView.findViewById(R.id.card_expiry_back);
         cvv_heading = itemView.findViewById(R.id.cvv);
         cvv = itemView.findViewById(R.id.card_cvv_back);
@@ -366,7 +462,7 @@ class AccountCardItemsRecycleViewAdapter extends RecyclerView.Adapter<AccountCar
         viewHolder.title_back.setText(account.Title);
         viewHolder.balance.setText(String.valueOf(account.Balance));
         viewHolder.number.setText(account.Number);
-        if (Objects.equals(account.Type, "Debit Card") || Objects.equals(account.Type, "Credit Card")){
+        if (Objects.equals(account.Type, "Debit Card") || Objects.equals(account.Type, "Credit Card")) {
             viewHolder.holder.setText(account.Holder);
             viewHolder.provider_front.setText(account.Provider);
             viewHolder.provider_back.setText(account.Provider);
@@ -374,8 +470,8 @@ class AccountCardItemsRecycleViewAdapter extends RecyclerView.Adapter<AccountCar
             viewHolder.expireson.setText("EXPIRES ON");
             viewHolder.expiry.setText(account.Validity);
             viewHolder.cvv_heading.setText("CVV");
-            viewHolder.cvv.setText("***");}
-        else{
+            viewHolder.cvv.setText("***");
+        } else {
             viewHolder.holder.setText("");
             viewHolder.provider_front.setText("");
             viewHolder.provider_back.setText("");
@@ -393,6 +489,12 @@ class AccountCardItemsRecycleViewAdapter extends RecyclerView.Adapter<AccountCar
         viewHolder.back.setCameraDistance(8000 * scale);
 
         viewHolder.front.setOnClickListener(v -> {
+            Intent inte = new Intent(context, DashboardActivity.class);
+            inte.putExtra("Account", account.Title);
+            context.startActivity(inte);
+        });
+
+        viewHolder.front.setOnLongClickListener(v -> {
             frontAnim.setTarget(viewHolder.front);
             frontAnim.addListener(new AnimatorListenerAdapter() {
                 @Override
@@ -404,8 +506,10 @@ class AccountCardItemsRecycleViewAdapter extends RecyclerView.Adapter<AccountCar
             });
             frontAnim.start();
             backAnim.start();
+            return true;
         });
-        viewHolder.back.setOnClickListener(v -> {
+
+        viewHolder.back.setOnLongClickListener(v -> {
             frontAnim.setTarget(viewHolder.back);
             frontAnim.addListener(new AnimatorListenerAdapter() {
                 @Override
@@ -417,15 +521,9 @@ class AccountCardItemsRecycleViewAdapter extends RecyclerView.Adapter<AccountCar
             });
             frontAnim.start();
             backAnim.start();
+            return true;
         });
 
-        viewHolder.front.setOnLongClickListener(new View.OnLongClickListener() {
-            public boolean onLongClick(View v) {
-//                Intent start = new Intent(v.getContext(), RecordsActivity.class);
-//                v.getContext().startActivity(start);
-                return true;
-            }
-        });
     }
 
     @Override
@@ -435,28 +533,40 @@ class AccountCardItemsRecycleViewAdapter extends RecyclerView.Adapter<AccountCar
 }
 
 
-class RecordViewHolder extends RecyclerView.ViewHolder {
-    TextView title, account, amount;
+class RecordHeaderViewHolder extends RecyclerView.ViewHolder {
+    TextView date;
 
-    RecordViewHolder(View itemView) {
+    RecordHeaderViewHolder(View itemView) {
+        super(itemView);
+
+        date = itemView.findViewById(R.id.record_date);
+    }
+}
+
+class RecordItemViewHolder extends RecyclerView.ViewHolder {
+    TextView title, account, amount;
+    ImageView icon;
+
+    RecordItemViewHolder(View itemView) {
         super(itemView);
 
         title = itemView.findViewById(R.id.add_account);
         account = itemView.findViewById(R.id.textView3);
         amount = itemView.findViewById(R.id.textView4);
+        icon = itemView.findViewById(R.id.recordIcon);
     }
 }
 
-class RecordItemsRecycleViewAdapter extends RecyclerView.Adapter<RecordViewHolder> {
+class RecordItemsRecycleViewAdapter extends RecyclerView.Adapter<RecordItemViewHolder> {
     public interface RecordItemsOnClickHandler {
         void onClick(int index);
     }
 
-    List<Records> list;
+    List<Transaction> list;
     Context context;
     RecordItemsOnClickHandler clickHandler;
 
-    public RecordItemsRecycleViewAdapter(List<Records> list, Context context, RecordItemsOnClickHandler clickHandler) {
+    public RecordItemsRecycleViewAdapter(List<Transaction> list, Context context, RecordItemsOnClickHandler clickHandler) {
         this.list = list;
         this.context = context;
         this.clickHandler = clickHandler;
@@ -464,20 +574,21 @@ class RecordItemsRecycleViewAdapter extends RecyclerView.Adapter<RecordViewHolde
 
     @NonNull
     @Override
-    public RecordViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RecordItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
-        return new RecordViewHolder(inflater.inflate(R.layout.layout_record_items, parent, false));
+        return new RecordItemViewHolder(inflater.inflate(R.layout.layout_record_items, parent, false));
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RecordViewHolder viewHolder, int position) {
+    public void onBindViewHolder(@NonNull RecordItemViewHolder viewHolder, int position) {
         final int index = viewHolder.getAdapterPosition();
 
-        Records record = list.get(position);
-        viewHolder.title.setText(record.title);
-        viewHolder.account.setText(record.account);
-        viewHolder.amount.setText(String.valueOf(record.amount));
+        Transaction record = list.get(position);
+        viewHolder.title.setText(record.Note);
+        viewHolder.account.setText(record.Account);
+        viewHolder.amount.setText(String.valueOf(record.Amount));
+        viewHolder.icon.setImageResource(record.Icon);
 
         viewHolder.itemView.setOnClickListener(v -> clickHandler.onClick(index));
     }
@@ -488,5 +599,161 @@ class RecordItemsRecycleViewAdapter extends RecyclerView.Adapter<RecordViewHolde
     }
 }
 
+class SectionedRecordsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+
+    private final Context mContext;
+    private static final int SECTION_TYPE = 0;
+
+    private boolean mValid = true;
+    private int mSectionResourceId;
+    private int mTextResourceId;
+    private LayoutInflater mLayoutInflater;
+    private RecyclerView.Adapter mBaseAdapter;
+    private SparseArray<Section> mSections = new SparseArray<Section>();
 
 
+    public SectionedRecordsRecyclerViewAdapter(Context context, RecordItemsRecycleViewAdapter baseAdapter) {
+
+        mLayoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        mSectionResourceId = R.layout.layout_record_date;
+        mTextResourceId = R.id.record_date;
+        mBaseAdapter = baseAdapter;
+        mContext = context;
+
+        mBaseAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+            @Override
+            public void onChanged() {
+                mValid = mBaseAdapter.getItemCount() > 0;
+                notifyDataSetChanged();
+            }
+
+            @Override
+            public void onItemRangeChanged(int positionStart, int itemCount) {
+                mValid = mBaseAdapter.getItemCount() > 0;
+                notifyItemRangeChanged(positionStart, itemCount);
+            }
+
+            @Override
+            public void onItemRangeInserted(int positionStart, int itemCount) {
+                mValid = mBaseAdapter.getItemCount() > 0;
+                notifyItemRangeInserted(positionStart, itemCount);
+            }
+
+            @Override
+            public void onItemRangeRemoved(int positionStart, int itemCount) {
+                mValid = mBaseAdapter.getItemCount() > 0;
+                notifyItemRangeRemoved(positionStart, itemCount);
+            }
+        });
+    }
+
+    @NonNull
+    @Override
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int typeView) {
+        if (typeView == SECTION_TYPE) {
+            Context context = parent.getContext();
+            LayoutInflater inflater = LayoutInflater.from(context);
+            return new RecordHeaderViewHolder(inflater.inflate(R.layout.layout_record_date, parent, false));
+        } else {
+            return mBaseAdapter.onCreateViewHolder(parent, typeView - 1);
+        }
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder sectionViewHolder, int position) {
+        if (isSectionHeaderPosition(position)) {
+            ((RecordHeaderViewHolder) sectionViewHolder).date.setText(mSections.get(position).title);
+        } else {
+            mBaseAdapter.onBindViewHolder(sectionViewHolder, sectionedPositionToPosition(position));
+        }
+
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return isSectionHeaderPosition(position)
+                ? SECTION_TYPE
+                : mBaseAdapter.getItemViewType(sectionedPositionToPosition(position)) + 1;
+    }
+
+
+    public static class Section {
+        int firstPosition;
+        int sectionedPosition;
+        CharSequence title;
+
+        public Section(int firstPosition, CharSequence title) {
+            this.firstPosition = firstPosition;
+            this.title = title;
+        }
+
+        public CharSequence getTitle() {
+            return title;
+        }
+    }
+
+
+    public void setSections(Section[] sections) {
+        mSections.clear();
+
+        Arrays.sort(sections, new Comparator<Section>() {
+            @Override
+            public int compare(Section o, Section o1) {
+                return Integer.compare(o.firstPosition, o1.firstPosition);
+            }
+        });
+
+        int offset = 0; // offset positions for the headers we're adding
+        for (Section section : sections) {
+            section.sectionedPosition = section.firstPosition + offset;
+            mSections.append(section.sectionedPosition, section);
+            ++offset;
+        }
+
+        notifyDataSetChanged();
+    }
+
+    public int positionToSectionedPosition(int position) {
+        int offset = 0;
+        for (int i = 0; i < mSections.size(); i++) {
+            if (mSections.valueAt(i).firstPosition > position) {
+                break;
+            }
+            ++offset;
+        }
+        return position + offset;
+    }
+
+    public int sectionedPositionToPosition(int sectionedPosition) {
+        if (isSectionHeaderPosition(sectionedPosition)) {
+            return RecyclerView.NO_POSITION;
+        }
+
+        int offset = 0;
+        for (int i = 0; i < mSections.size(); i++) {
+            if (mSections.valueAt(i).sectionedPosition > sectionedPosition) {
+                break;
+            }
+            --offset;
+        }
+        return sectionedPosition + offset;
+    }
+
+    public boolean isSectionHeaderPosition(int position) {
+        return mSections.get(position) != null;
+    }
+
+
+    @Override
+    public long getItemId(int position) {
+        return isSectionHeaderPosition(position)
+                ? Integer.MAX_VALUE - mSections.indexOfKey(position)
+                : mBaseAdapter.getItemId(sectionedPositionToPosition(position));
+    }
+
+    @Override
+    public int getItemCount() {
+        return (mValid ? mBaseAdapter.getItemCount() + mSections.size() : 0);
+    }
+
+}

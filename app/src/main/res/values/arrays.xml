@@ -17,4 +17,38 @@
         <item>"BDT"</item>
         <item>"USD"</item>
     </string-array>
+
+    <string-array name="category_names">
+        <item>Food &amp; Drinks</item>
+        <item>Shopping</item>
+        <item>Housing</item>
+        <item>Vehicle</item>
+        <item>Transport</item>
+        <item>Healthcare</item>
+        <item>Education &amp; Development</item>
+        <item>Communication</item>
+        <item>Life &amp; Entertainment</item>
+        <item>Investments</item>
+        <item>Financial Expenses</item>
+        <item>Income</item>
+        <item>Transfer</item>
+        <item>Others</item>
+
+    </string-array>
+    <integer-array name="category_icons">
+        <item>@drawable/dining</item>
+        <item>@drawable/shopping_bag</item>
+        <item>@drawable/home</item>
+        <item>@drawable/car</item>
+        <item>@drawable/bus</item>
+        <item>@drawable/doctors_bag</item>
+        <item>@drawable/teaching</item>
+        <item>@drawable/ringing_phone</item>
+        <item>@drawable/movie_projector</item>
+        <item>@drawable/profit</item>
+        <item>@drawable/tax</item>
+        <item>@drawable/cash</item>
+        <item>@drawable/transfer</item>
+        <item>@drawable/information</item>
+    </integer-array>
 </resources>
