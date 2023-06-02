@@ -68,7 +68,7 @@ public class TransactionDetailsFragment extends Fragment {
     Double amount;
     private final int PICK_IMAGE_REQUEST = 22;
 
-    private Double expenses=0.0,income=0.0;
+    public Double expenses=0.0,income=0.0;
 
     public TransactionDetailsFragment() {
         // Required empty public constructor
@@ -94,13 +94,13 @@ public class TransactionDetailsFragment extends Fragment {
             key = "income";
             account_from = bundle.getString("account");
             amount = bundle.getDouble("income");
-            income=amount;
+            income+=amount;
         }
         else if (bundle.containsKey("expense")) {
             key = "expense";
             account_from = bundle.getString("account");
             amount = bundle.getDouble("expense");
-            expenses=amount;
+            expenses+=amount;
 
         }
         else if (bundle.containsKey("transfer")) {
@@ -195,12 +195,7 @@ public class TransactionDetailsFragment extends Fragment {
             }
 
             CreateTransaction(finalDate, payee.getText().toString(), note.getText().toString(), status_spinner.getSelectedItem().toString(), "images/" + TxID);
-            Intent intent = new Intent(getContext(), StatisticsActivity.class);
-            intent.putExtra("expenses", expenses);
-            intent.putExtra("income", income);
-            startActivity(intent);
-            Intent intent2 = new Intent(getContext(), BudgetActivity.class);
-            intent.putExtra("expenses", expenses);
+
 
         });
         return v;
@@ -246,10 +241,15 @@ public class TransactionDetailsFragment extends Fragment {
                 Log.e("firebase", "Error getting data", task.getException());
             } else {
                 Double balance = Double.valueOf(String.valueOf(task.getResult().getValue()));
-                if (Objects.equals(key, "income"))
+                if (Objects.equals(key, "income")) {
                     ref.child("Balance").setValue(balance + amount);
-                else if (Objects.equals(key, "expense"))
+                    income += amount;
+                }
+                else if (Objects.equals(key, "expense")) {
                     ref.child("Balance").setValue(balance - amount);
+                    expenses += amount;
+
+                }
                 else {
                     ref.child("Balance").setValue(balance - amount);
                     Log.d("f", account_to);
@@ -259,9 +259,16 @@ public class TransactionDetailsFragment extends Fragment {
                 ref.child("Transaction").child(TxID).setValue(tx);
             }
         });
-
+//        Intent intent = new Intent(getContext(), StatisticsActivity.class);
+//        intent.putExtra("expenses", expenses);
+//        intent.putExtra("income", income);
+//        startActivity(intent);
+//        Intent intent2 = new Intent(getContext(), BudgetActivity.class);
+//        intent.putExtra("expenses", expenses);
         getActivity().finish();
+
     }
+
 
 
 

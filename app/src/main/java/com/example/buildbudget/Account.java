@@ -27,5 +27,7 @@ public class Account {
         this.Number = number;
         this.Currency = currency;
         this.Balance = balance;
+
+
     }
 }
