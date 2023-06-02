@@ -39,7 +39,7 @@ public class TransactionAmountFragment extends Fragment implements AdapterView.O
     Spinner account_from_spinner, account_to_spinner;
     ImageButton income, expense, transfer;
     Button confirm;
-    TextView account_from_balance;
+    TextView account_from_balance, invalid;
     EditText amount;
 
     public TransactionAmountFragment() {
@@ -67,10 +67,17 @@ public class TransactionAmountFragment extends Fragment implements AdapterView.O
         transfer = v.findViewById(R.id.transferButton);
         account_from_balance = v.findViewById(R.id.account_from_balance);
         amount = v.findViewById(R.id.amount);
+        invalid = v.findViewById(R.id.amount_invalid);
         confirm = v.findViewById(R.id.confirm_button);
 
+        amount.setEnabled(false);
+
         income.setOnClickListener(v1 -> {
+            amount.setEnabled(true);
             confirm.setEnabled(false);
+            invalid.setVisibility(View.INVISIBLE);
+            parent.categoryIcon.setImageResource(R.drawable.cash);
+            parent.categoryName = "Income";
             confirm.setBackgroundColor(getResources().getColor(R.color.Disabled));
             income.setBackgroundTintList(getResources().getColorStateList(R.color.d_teal));
             expense.setBackgroundTintList(getResources().getColorStateList(R.color.Orange));
@@ -89,7 +96,7 @@ public class TransactionAmountFragment extends Fragment implements AdapterView.O
                         confirm.setBackgroundColor(getResources().getColor(R.color.Black));
                         confirm.setOnClickListener(view ->
                         {
-                           TransactionDetailsFragment newFragment = new TransactionDetailsFragment();
+                            TransactionDetailsFragment newFragment = new TransactionDetailsFragment();
 
                             Bundle bundle = new Bundle();
                             bundle.putString("account", account_from_spinner.getSelectedItem().toString());
@@ -111,7 +118,9 @@ public class TransactionAmountFragment extends Fragment implements AdapterView.O
         });
 
         expense.setOnClickListener(v1 -> {
+            amount.setEnabled(true);
             confirm.setEnabled(false);
+            invalid.setVisibility(View.INVISIBLE);
             confirm.setBackgroundColor(getResources().getColor(R.color.Disabled));
             income.setBackgroundTintList(getResources().getColorStateList(R.color.Teal));
             expense.setBackgroundTintList(getResources().getColorStateList(R.color.d_orange));
@@ -125,22 +134,27 @@ public class TransactionAmountFragment extends Fragment implements AdapterView.O
 
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
-                    if (Double.parseDouble(amount.getText().toString()) <= Double.parseDouble(account_from_balance.getText().toString())) {
+                    if (!amount.getText().toString().isEmpty()) {
                         confirm.setEnabled(true);
                         confirm.setBackgroundColor(getResources().getColor(R.color.Black));
                         confirm.setOnClickListener(view ->
                         {
-                            TransactionDetailsFragment newFragment = new TransactionDetailsFragment();
+                            if (Double.parseDouble(amount.getText().toString()) <= Double.parseDouble(account_from_balance.getText().toString())) {
+                                TransactionDetailsFragment newFragment = new TransactionDetailsFragment();
 
-                            Bundle bundle = new Bundle();
-                            bundle.putString("account", account_from_spinner.getSelectedItem().toString());
-                            bundle.putDouble("expense", Double.parseDouble(amount.getText().toString()));
-                            newFragment.setArguments(bundle);
+                                Bundle bundle = new Bundle();
+                                bundle.putString("account", account_from_spinner.getSelectedItem().toString());
+                                bundle.putDouble("expense", Double.parseDouble(amount.getText().toString()));
+                                newFragment.setArguments(bundle);
 
-                            FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-                            transaction.replace(R.id.transaction_frame, newFragment);
-                            transaction.addToBackStack(null);
-                            transaction.commit();
+                                FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+                                transaction.replace(R.id.transaction_frame, newFragment);
+                                transaction.addToBackStack(null);
+                                transaction.commit();
+                            } else {
+                                invalid.setVisibility(View.VISIBLE);
+                                amount.setText(null);
+                            }
                         });
                     }
                 }
@@ -152,7 +166,11 @@ public class TransactionAmountFragment extends Fragment implements AdapterView.O
         });
 
         transfer.setOnClickListener(v1 -> {
+            amount.setEnabled(true);
             confirm.setEnabled(false);
+            invalid.setVisibility(View.INVISIBLE);
+            parent.categoryIcon.setImageResource(R.drawable.transfer);
+            parent.categoryName = "Transfer";
             confirm.setBackgroundColor(getResources().getColor(R.color.Disabled));
             income.setBackgroundTintList(getResources().getColorStateList(R.color.Teal));
             expense.setBackgroundTintList(getResources().getColorStateList(R.color.Orange));
@@ -166,25 +184,28 @@ public class TransactionAmountFragment extends Fragment implements AdapterView.O
 
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
-                    if (!amount.getText().toString().isEmpty()
-                            && account_from_spinner.getSelectedItem() != account_to_spinner.getSelectedItem()
-                            && Double.parseDouble(amount.getText().toString()) <= Double.parseDouble(account_from_balance.getText().toString())) {
+                    if (!amount.getText().toString().isEmpty() && account_from_spinner.getSelectedItem() != account_to_spinner.getSelectedItem()) {
                         confirm.setEnabled(true);
                         confirm.setBackgroundColor(getResources().getColor(R.color.Black));
                         confirm.setOnClickListener(view ->
                         {
-                            TransactionDetailsFragment newFragment = new TransactionDetailsFragment();
+                            if (Double.parseDouble(amount.getText().toString()) <= Double.parseDouble(account_from_balance.getText().toString())) {
+                                TransactionDetailsFragment newFragment = new TransactionDetailsFragment();
 
-                            Bundle bundle = new Bundle();
-                            bundle.putString("account_from", account_from_spinner.getSelectedItem().toString());
-                            bundle.putString("account_to", account_to_spinner.getSelectedItem().toString());
-                            bundle.putDouble("transfer", Double.parseDouble(amount.getText().toString()));
-                            newFragment.setArguments(bundle);
+                                Bundle bundle = new Bundle();
+                                bundle.putString("account_from", account_from_spinner.getSelectedItem().toString());
+                                bundle.putString("account_to", account_to_spinner.getSelectedItem().toString());
+                                bundle.putDouble("transfer", Double.parseDouble(amount.getText().toString()));
+                                newFragment.setArguments(bundle);
 
-                            FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-                            transaction.replace(R.id.transaction_frame, newFragment);
-                            transaction.addToBackStack(null);
-                            transaction.commit();
+                                FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+                                transaction.replace(R.id.transaction_frame, newFragment);
+                                transaction.addToBackStack(null);
+                                transaction.commit();
+                            } else {
+                                invalid.setVisibility(View.VISIBLE);
+                                amount.setText(null);
+                            }
                         });
                     }
                 }
