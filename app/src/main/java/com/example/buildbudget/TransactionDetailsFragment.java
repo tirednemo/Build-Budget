@@ -18,10 +18,14 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
@@ -219,8 +223,13 @@ public class TransactionDetailsFragment extends Fragment {
                 else {
                     ref.child("Balance").setValue(balance - amount);
                     Log.d("f", account_to);
-                    mDatabase.child("users").child(user.getUid()).child("accounts").child(account_to).child("Balance").setValue(balance + amount);
-                    mDatabase.child("users").child(user.getUid()).child("accounts").child(account_to).child("Transaction").child(TxID).setValue(tx);
+                    mDatabase.child("users").child(user.getUid()).child("accounts").child(account_to).child("Balance").get().addOnCompleteListener(task1 -> {
+                        if (task1.isSuccessful()) {
+                            Double bbalance = Double.valueOf(String.valueOf(task1.getResult().getValue()));
+                            mDatabase.child("users").child(user.getUid()).child("accounts").child(account_to).child("Balance").setValue(bbalance+amount);
+                            mDatabase.child("users").child(user.getUid()).child("accounts").child(account_to).child("Transaction").child(TxID).setValue(tx);
+                        }
+                    });
                 }
                 ref.child("Transaction").child(TxID).setValue(tx);
             }

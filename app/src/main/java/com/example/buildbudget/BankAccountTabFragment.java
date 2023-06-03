@@ -247,7 +247,7 @@ public class BankAccountTabFragment extends Fragment implements AdapterView.OnIt
         String[] words = body.split(" ");
         for (int i = 0; i < words.length; i++) {
             if (words[i].contains("balance") || words[i].contains("Balance")) {
-                String balanceString = words[i + 2];
+                String balanceString = words[i + 3];
                 return Double.parseDouble(balanceString.substring(0, balanceString.length() - 1));
             }
         }

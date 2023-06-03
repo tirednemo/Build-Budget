@@ -345,7 +345,7 @@ public class DashboardActivity extends AppCompatActivity implements
                 startActivity(start);
                 break;
             case R.id.nav_ppay:
-                start = new Intent(this, AddPlannedPaymentActivity.class);
+                start = new Intent(this, PlannedPaymentActivity.class);
                 startActivity(start);
                 break;
 //            case R.id.nav_goals:

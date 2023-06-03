@@ -5,6 +5,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -12,9 +13,12 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 public class AddPlannedPaymentActivity extends AppCompatActivity {
@@ -22,6 +26,7 @@ public class AddPlannedPaymentActivity extends AppCompatActivity {
     private EditText editAmount, editDescription;
     private DatePicker datePicker;
     private Button btnAddPlannedPayment;
+    private ImageButton BackButtonapp;
     private DatabaseReference plannedPaymentsRef;
 
     @Override
@@ -33,9 +38,18 @@ public class AddPlannedPaymentActivity extends AppCompatActivity {
         editDescription = findViewById(R.id.editDescription);
         datePicker = findViewById(R.id.datePicker);
         btnAddPlannedPayment = findViewById(R.id.btnAddPlannedPayment);
+        BackButtonapp = findViewById(R.id.BackButtonapp);
+        BackButtonapp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
 
         // Get the reference to the "planned_payments" node in your Firebase Realtime Database
-        plannedPaymentsRef = FirebaseDatabase.getInstance().getReference("planned_payments");
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        plannedPaymentsRef = FirebaseDatabase.getInstance("https://build-budget-71a7f-default-rtdb.asia-southeast1.firebasedatabase.app/")
+                .getReference().child("users").child(user.getUid()).child("PlannedPayment");
 
         btnAddPlannedPayment.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -56,12 +70,14 @@ public class AddPlannedPaymentActivity extends AppCompatActivity {
         // Create a new PlannedPayment object
         PlannedPayment plannedPayment = new PlannedPayment();
         plannedPayment.setAmount(amount);
-        plannedPayment.setDescription(description);
 
+        plannedPayment.setName(description);
         // Create a Calendar instance to set the payment date
         Calendar calendar = Calendar.getInstance();
         calendar.set(year, month, day);
-        plannedPayment.setDate(calendar.getTimeInMillis());
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String dateString = dateFormat.format(calendar.getTime());
+        plannedPayment.setDate(dateString);
 
         // Generate a unique ID for the planned payment
         String paymentId = plannedPaymentsRef.push().getKey();
